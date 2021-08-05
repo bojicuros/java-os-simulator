@@ -2,11 +2,12 @@ package FileSystem;
 
 public class Main 
 {
+
     public static void main(String[] args) 
-    {
-        FileSystem fs=new FileSystem();
-        fs.addFolder("f1");
-        fs.addFolder("f2");
+	{
+		FileSystem fs = new FileSystem();
+		fs.addFolder("f1");
+		fs.addFolder("f2");
         fs.addFile("file1");
         fs.printCurrentFolder();
         fs.printContent();
@@ -25,8 +26,9 @@ public class Main
         fs.addFolder("f2_1_1");
         fs.printCurrentFolder();
         fs.printContent();
-        fs.renameFolder("f2_1_1", "preimenovan");
+        fs.changeFolder("..");
+        fs.changeFolder("..");
+        fs.renameFolder("f1", "abc");
         fs.printContent();
-        
     }
 }

@@ -1,26 +1,69 @@
 package kernel;
 
-public class Process {
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.ArrayList;
+import java.util.Scanner;
 
-	private String pid; // Process identifier
+import memory.Memory;
+import memory.MemoryPartition;
+
+public class Process implements Comparable<Process> {
+
+	private int pid; // Process identifier
 	private String name;
+	private String filePath;
 	private ProcessState state;
 	private int cpuUsage;
-	private int counter = 0;
+	private int size;
+	private float arrivalTime;
+	private int burstTime; // Time needed for execution
+	private ArrayList<String[]> assemblerProgram = new ArrayList<String[]>();
 
-	public Process(String name) {
+	public Process(int pid, String name, int size, String filePath) {
+		this.pid = pid;
 		this.name = name;
-		counter++;
-		this.pid = "prcs" + counter;
-		state = ProcessState.READY;
-
+		state = ProcessState.NEW;
+		cpuUsage = 0;
+		this.size = size;
+		this.filePath = filePath;
 	}
 
-	public Process(Process p) {
-		this.pid = p.pid;
-		this.name = p.name;
-		this.state = p.state;
-		this.cpuUsage = p.cpuUsage;
+	public boolean loadProcess(int indexOfPartition) {
+		MemoryPartition p = Memory.occupiePartition(indexOfPartition, this);
+		if (p == null)
+			return false;
+		cpuUsage++;
+		return true;
+	}
+
+	public boolean loadProcess(MemoryPartition partition) {
+		if (partition == null)
+			return false;
+		partition.occupieMemory(this);
+		cpuUsage++;
+		return true;
+	}
+
+	public void readFile() {
+		try {
+			File myObj = new File(this.filePath);
+			Scanner myReader = new Scanner(myObj);
+			while (myReader.hasNextLine()) {
+				String line = myReader.nextLine();
+				String[] data = line.split(" ");
+				assemblerProgram.add(data);
+			}
+			burstTime = Integer.parseInt(assemblerProgram.get(0)[0]);
+			myReader.close();
+		} catch (FileNotFoundException e) {
+			System.out.printf("An error occurred.\n");
+			e.printStackTrace();
+		}
+	}
+
+	public void freeMemory() {
+		this.terminate();
 	}
 
 	public void block() {
@@ -35,41 +78,51 @@ public class Process {
 		this.state = ProcessState.TERMINATED;
 	}
 
-	public String getPid() {
+	public int getPid() {
 		return pid;
-	}
-
-	public void setPid(String pid) {
-		this.pid = pid;
 	}
 
 	public String getName() {
 		return name;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public ProcessState getStanje() {
+	public ProcessState getState() {
 		return state;
-	}
-
-	public void setStanje(ProcessState stanje) {
-		this.state = stanje;
 	}
 
 	public int getCpuUsage() {
 		return cpuUsage;
 	}
 
-	public void setCpuUsage(int cpuUsage) {
-		this.cpuUsage = cpuUsage;
+	public int getSize() {
+		return size;
+	}
+
+	public float getArrivalTime() {
+		return arrivalTime;
+	}
+
+	public int getBurstTime() {
+		return burstTime;
+	}
+
+	public String getFilePath() {
+		return filePath;
+	}
+
+	public ArrayList<String[]> getAssemblerProgram() {
+		return assemblerProgram;
 	}
 
 	@Override
 	public String toString() {
-		return "Process [pid=" + pid + ", name=" + name + ", stanje=" + state + ", cpuUsage=" + cpuUsage + "]";
+		return "Process [pid=" + pid + ", name=" + name + ", state=" + state + ", cpuUsage=" + cpuUsage
+				+ ", arrivalTime=" + arrivalTime + "]";
+	}
+
+	@Override
+	public int compareTo(Process o) {
+		return (int) (this.arrivalTime - o.arrivalTime);
 	}
 
 }
