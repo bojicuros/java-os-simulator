@@ -29,22 +29,6 @@ public class Process implements Comparable<Process> {
 		this.filePath = filePath;
 	}
 
-	public boolean loadProcess(int indexOfPartition) {
-		MemoryPartition p = Memory.occupiePartition(indexOfPartition, this);
-		if (p == null)
-			return false;
-		cpuUsage++;
-		return true;
-	}
-
-	public boolean loadProcess(MemoryPartition partition) {
-		if (partition == null)
-			return false;
-		partition.occupieMemory(this);
-		cpuUsage++;
-		return true;
-	}
-
 	public void readFile() {
 		try {
 			File myObj = new File(this.filePath);
