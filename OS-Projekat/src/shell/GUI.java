@@ -18,13 +18,9 @@ public class GUI extends Application {
 	private PipedOutputStream out = new PipedOutputStream();
 	private int len = 0;
 
-	public static void setTextToShowClear() {
+	public static void setSBClear() {
 		textToShow = "";
 		bottom.clear();
-	}
-	
-	public static void addTextToShow(String par) {
-		textToShow+=par;
 	}
 
 	public static void setHelp() {
@@ -36,7 +32,7 @@ public class GUI extends Application {
 		help += "MD \t\t\t Make dir.\n";
 		help += "DD \t\t\t Delete dir.\n";
 		help += "RD \t\t\t Rename dir.\n";
-		help += "EXE \t\t\t Execute. \n";
+		help += "LOAD \t\t\t Load new procces and send him in the background. \n";
 		help += "LSPR \t\t List of processes.\n";
 		help += "TRMPR \t\t Terminate process.\n";
 		help += "BLPR \t\t Blocks process.\n";
@@ -72,8 +68,8 @@ public class GUI extends Application {
 				ShellCommands.readACommand(inp, len);
 
 				textToShow += ">" + bottom.getText() + "\n";
-				String command = ShellCommands.returnCommand();
-				textToShow += command;
+				String st = ShellCommands.returnCommand();
+				textToShow += st;
 
 				top.setText(textToShow);
 				bottom.clear();
@@ -88,7 +84,6 @@ public class GUI extends Application {
 				String last = ShellCommands.previous();
 				if (!last.equals("")) {
 					bottom.setText(last);
-					// consoleIn.positionCaret(consoleIn.getLength());
 				}
 			} else if (e.getCode().equals(KeyCode.DOWN)) {
 				String next = ShellCommands.next();

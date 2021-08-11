@@ -6,13 +6,13 @@ import java.util.ArrayList;
 
 public class ShellCommands {
 
-	private static String commandText;
+	private static String st;
 	private static String command;
 	private static ArrayList<String> commandList = new ArrayList<String>();
 	private static int iter;
 
 	public static String returnCommand() {
-		commandText = "";
+		st = "";
 		commandList.add(command);
 		iter = commandList.size();
 		command = command.toLowerCase();
@@ -24,10 +24,10 @@ public class ShellCommands {
 
 		case "dir": // a show directory
 			if (commands.length == 1) {
-				commandText = "Show directory\n";
+				st = "Show directory\n";
 				ShellExe.showDir();
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
 		case "goto": // change directory
@@ -35,7 +35,7 @@ public class ShellCommands {
 				String parameter = commands[1];
 				ShellExe.go(parameter);
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
 		case "md": // make directory
@@ -43,8 +43,7 @@ public class ShellCommands {
 				String parameter = commands[1];
 				ShellExe.md(parameter);
 			} else
-				commandText = errorWithParameters();
-
+				st = errorWithParameters();
 			break;
 
 		case "dd": // delete dir
@@ -52,7 +51,7 @@ public class ShellCommands {
 				String parameter = commands[1];
 				ShellExe.dd(parameter);
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
 		case "rd": // rename dir
@@ -61,24 +60,28 @@ public class ShellCommands {
 				String parameter2 = commands[2];
 				ShellExe.rd(parameter1, parameter2);
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
-		case "exe": // execute
+		case "load": // load
 			if (commands.length == 3) {
 				String parameter1 = commands[1];
 				String parameter2 = commands[2];
-				ShellExe.exe(parameter1, parameter2);
+				ShellExe.load(parameter1, parameter2);
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
+			break;
+
+		case "exe": // load
+			ShellExe.exe();
 			break;
 
 		case "lspr": // list of processes
 			if (commands.length == 1) {
 				ShellExe.lspr();
-				commandText = "Lista procesa";
+				st = "Lista procesa";
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
 		case "trmpr": // terminate process
@@ -86,26 +89,26 @@ public class ShellCommands {
 				String parameter = commands[1];
 				ShellExe.trmpr(parameter);
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 
 			break;
 
 		case "blpr": // block process
 			if (commands.length == 2) {
 				String parameter = commands[1];
-				commandText = "blokiraj proces";
+				st = "blokiraj proces";
 				ShellExe.blpr(parameter);
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
-		case "ublpr": // unblock process
+		case "ublpr": // ublock process
 			if (commands.length == 2) {
 				String parameter = commands[1];
-				commandText = "unblokiraj proces";
+				st = "unblokiraj proces";
 				ShellExe.ublpr(parameter);
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
 		case "clear": // clear terminal
@@ -117,20 +120,20 @@ public class ShellCommands {
 			if (commands.length == 1) {
 				ShellExe.exit();
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
 		case "help": // help
 			if (commands.length == 1) {
 				ShellExe.help();
 			} else
-				commandText = errorWithParameters();
+				st = errorWithParameters();
 			break;
 
 		default:
-			commandText = "That command dont exist. Try again\n";
+			st = "That command dont exist. Try again\n";
 		}
-		return commandText;
+		return st;
 	}
 
 	public static String previous() {
@@ -172,7 +175,6 @@ public class ShellCommands {
 			}
 		}
 	}
-
 
 	private static String errorWithParameters() {
 		String s = "Parameters for command are incorrect!\n";

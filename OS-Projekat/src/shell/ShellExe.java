@@ -6,23 +6,27 @@ public class ShellExe {
 
 	}
 
-	public static void go(String parmeter) {
+	public static void go(String par) {
 
 	}
 
-	public static void md(String parmeter) {
+	public static void md(String par) {
 
 	}
 
-	public static void dd(String parmeter) {
+	public static void dd(String par) {
 
 	}
 
-	public static void rd(String parameter1, String parameter2) {
+	public static void rd(String par1, String par2) {
 
 	}
 
-	public static void exe(String parmeter1, String parmeter2) {
+	public static void load(String par1, String par2) {
+
+	}
+
+	public static void exe() {
 
 	}
 
@@ -30,20 +34,20 @@ public class ShellExe {
 
 	}
 
-	public static void trmpr(String parmeter) {
+	public static void trmpr(String par) {
 
 	}
 
-	public static void blpr(String parmeter) {
+	public static void blpr(String par) {
 
 	}
 
-	public static void ublpr(String parmeter) {
+	public static void ublpr(String par) {
 
 	}
 
 	public static void clear() {
-		GUI.setTextToShowClear();
+		GUI.setSBClear();
 	}
 
 	public static void help() {
