@@ -1,12 +1,11 @@
 package kernel;
 
-import java.io.File;
-import java.io.FileNotFoundException;
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
-import memory.Memory;
-import memory.MemoryPartition;
+import shell.Shell;
 
 public class Process implements Comparable<Process> {
 
@@ -14,40 +13,51 @@ public class Process implements Comparable<Process> {
 	private String name;
 	private String filePath;
 	private ProcessState state;
-	private int cpuUsage;
-	private int size;
-	private float arrivalTime;
-	private int burstTime; // Time needed for execution
-	private ArrayList<String[]> assemblerProgram = new ArrayList<String[]>();
+	private ArrayList<String> instructions;
+	private long arrivalTime;
+	private int startAdress; // Address of program instructions in main memory
+	private int[] valuesOfRegisters; // To remember values of registers when switching to next process
+	private int pcValue = -1; // To remember PC value when switching to next process
 
-	public Process(int pid, String name, int size, String filePath) {
+	public Process(int pid, String filePath) {
 		this.pid = pid;
-		this.name = name;
-		state = ProcessState.NEW;
-		cpuUsage = 0;
-		this.size = size;
+		state = ProcessState.READY;
 		this.filePath = filePath;
+		name = fileName(filePath);
+		instructions = new ArrayList<>();
+		readFile();
+		ProcessScheduler.allProcesses.add(this);
+		ProcessScheduler.readyQueue.add(this);
 	}
 
 	public void readFile() {
+		ArrayList<String> instructions = new ArrayList<>();
 		try {
-			File myObj = new File(this.filePath);
-			Scanner myReader = new Scanner(myObj);
-			while (myReader.hasNextLine()) {
-				String line = myReader.nextLine();
-				String[] data = line.split(" ");
-				assemblerProgram.add(data);
+			BufferedReader br = new BufferedReader(new FileReader(filePath));
+			for (String line = br.readLine(); line != null; line = br.readLine()) {
+				String machineInstruction = Shell.asemblerToMachineInstruction(line);
+				instructions.add(machineInstruction);
 			}
-			burstTime = Integer.parseInt(assemblerProgram.get(0)[0]);
-			myReader.close();
-		} catch (FileNotFoundException e) {
-			System.out.printf("An error occurred.\n");
+			br.close();
+		} catch (IOException e) {
 			e.printStackTrace();
 		}
 	}
 
-	public void freeMemory() {
-		this.terminate();
+	public int loadIntoRAM() {
+		// vraca adresu odakle pocinje proces u ramu
+		return -1;
+	}
+
+	public void instructionsToRAM() {
+		for (int i = 0; i < instructions.size(); i++) {
+			/* RAM.setI(startAdress+i, Integer.parseInt(instructions.get(i))) */
+		}
+	}
+
+	private String fileName(String filePath) {
+		String[] parse = filePath.split("/");
+		return parse[parse.length - 1];
 	}
 
 	public void block() {
@@ -74,34 +84,59 @@ public class Process implements Comparable<Process> {
 		return state;
 	}
 
-	public int getCpuUsage() {
-		return cpuUsage;
+	public void setState(ProcessState state) {
+		this.state = state;
 	}
 
-	public int getSize() {
-		return size;
-	}
-
-	public float getArrivalTime() {
+	public long getArrivalTime() {
 		return arrivalTime;
 	}
 
-	public int getBurstTime() {
-		return burstTime;
+	public void setArrivalTime(long time) {
+		arrivalTime = time;
 	}
 
 	public String getFilePath() {
 		return filePath;
 	}
 
-	public ArrayList<String[]> getAssemblerProgram() {
-		return assemblerProgram;
+	public int[] getValuesOfRegisters() {
+		return valuesOfRegisters;
+	}
+
+	public void setValuesOfRegisters(int[] valuesOfRegisters) {
+		for (int i = 0; i < valuesOfRegisters.length; i++)
+			this.valuesOfRegisters[i] = valuesOfRegisters[i];
+	}
+
+	public int getPcValue() {
+		return pcValue;
+	}
+
+	public void setPcValue(int pcValue) {
+		this.pcValue = pcValue;
+	}
+
+	public int getStartAdress() {
+		return startAdress;
+	}
+
+	public void setStartAdress(int startAdress) {
+		this.startAdress = startAdress;
+	}
+
+	public ArrayList<String> getInstructions() {
+		return instructions;
+	}
+
+	public void setInstructions(ArrayList<String> instructions) {
+		this.instructions = instructions;
 	}
 
 	@Override
 	public String toString() {
-		return "Process [pid=" + pid + ", name=" + name + ", state=" + state + ", cpuUsage=" + cpuUsage
-				+ ", arrivalTime=" + arrivalTime + "]";
+		return "Process [pid=" + pid + ", name=" + name + ", state=" + state + ", cpuUsage=" + ", arrivalTime="
+				+ arrivalTime + "]";
 	}
 
 	@Override

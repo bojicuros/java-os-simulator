@@ -13,26 +13,6 @@ public class Shell {
 	public static int PC; // Program counter
 	public static String IR; // Instruction register
 
-	public static void main(String[] args) {
-//		long startTime = System.currentTimeMillis();
-//		while (System.currentTimeMillis() - startTime < 2) {
-//			int d = 5;
-//			System.out.println(d);
-//		}
-		
-		
-	}
-
-	public static void executeProcess(Process process) {
-		int startAdress = process.loadIntoRAM();
-		process.setStartAdress(startAdress);
-		PC = process.getStartAdress();
-		int temp = 0; // RAM.getI(PC)
-		String instruction = fromIntToInstruction(temp);
-		IR = instruction;
-		executeMachineInstruction(process);
-	}
-
 	public static String asemblerToMachineInstruction(String command) {
 		String instruction = "";
 		String arr[] = command.split("[ |,]");
@@ -184,12 +164,12 @@ public class Shell {
 
 	}
 
-	private static void executeMachineInstruction(Process process) {
+	public static void executeMachineInstruction(Process process) {
 		String operation = IR.substring(0, 4);
 		boolean programCounterChanged = false;
 
 		if (operation == Operations.halt) {
-			process.setState(ProcessState.TERMINATED);
+			process.setState(ProcessState.DONE);
 		} else if (operation == Operations.mov) {
 			String r1 = IR.substring(4, 8);
 			String r2 = IR.substring(8, 12);
@@ -260,7 +240,7 @@ public class Shell {
 			PC++;
 	}
 
-	private static String fromIntToInstruction(int temp) {
+	public static String fromIntToInstruction(int temp) {
 		String help = Integer.toBinaryString(temp);
 		if (help == "0")
 			help = "0000";

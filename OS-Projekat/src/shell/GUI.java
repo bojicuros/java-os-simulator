@@ -18,13 +18,16 @@ public class GUI extends Application {
 	private PipedOutputStream out = new PipedOutputStream();
 	private int len = 0;
 
+	public static void main(String[] args) throws IOException {
+		launch(args);
+	}
+
 	public static void setSBClear() {
 		textToShow = "";
 		bottom.clear();
 	}
 
 	public static void setHelp() {
-		System.out.println("g");
 		String help;
 
 		help = "DIR \t\t\t Displays a list of files and subdirectories in a directory.\n";
@@ -32,7 +35,8 @@ public class GUI extends Application {
 		help += "MD \t\t\t Make dir.\n";
 		help += "DD \t\t\t Delete dir.\n";
 		help += "RD \t\t\t Rename dir.\n";
-		help += "LOAD \t\t\t Load new procces and send him in the background. \n";
+		help += "LOAD \t\t Load and send procces in the background. \n";
+		help += "EXE \t\t\t Start executing processes. \n";
 		help += "LSPR \t\t List of processes.\n";
 		help += "TRMPR \t\t Terminate process.\n";
 		help += "BLPR \t\t Blocks process.\n";
@@ -56,14 +60,13 @@ public class GUI extends Application {
 
 		top.setMinSize(1000, 550);
 		top.setEditable(false);
-		// top.setStyle("-fx-text-fill:red;");
 
 		bottom.setMinSize(1000, 50);
 		bottom.setOnAction(e -> {
 			try {
-				byte niz[] = bottom.getText().getBytes();
-				out.write(niz);
-				len = niz.length;
+				byte array[] = bottom.getText().getBytes();
+				out.write(array);
+				len = array.length;
 
 				ShellCommands.readACommand(inp, len);
 
@@ -98,9 +101,5 @@ public class GUI extends Application {
 		primaryStage.setTitle("Console");
 		primaryStage.show();
 
-	}
-
-	public static void main(String[] args) throws IOException {
-		launch(args);
 	}
 }

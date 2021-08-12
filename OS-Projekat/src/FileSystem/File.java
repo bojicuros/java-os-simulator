@@ -5,7 +5,7 @@ import java.time.LocalDateTime;
 public class File {
 	protected String name;
 	protected String path;
-	protected int size = 0;
+	protected int size;
 	protected LocalDateTime created;
 	protected LocalDateTime modified;
 	protected Folder parentFolder;
@@ -61,6 +61,29 @@ public class File {
 	public void setName(String name) {
 		this.name = name;
 		modified = LocalDateTime.now();
+	}
+
+	public void setSize(int size) {
+		this.size = size;
+	}
+
+
+	public boolean save() {
+//		SecondaryMemory.saveFile(this);
+		return false;
+	}
+
+	public void delete() {
+//		SecondaryMemory.deleteFile(this);
+		
+	}
+
+	public void printFileBlocks() {
+//		String rez = "File "+name+", size: " + size + "\n";
+//		rez += "Is located on blocks: ";
+//		for (Block b : blocks)
+//			rez += b.getAdress() + ", ";
+//		System.out.println(rez);
 	}
 
 	@Override
