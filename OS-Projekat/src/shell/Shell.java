@@ -19,6 +19,8 @@ public class Shell {
 //			int d = 5;
 //			System.out.println(d);
 //		}
+		
+		
 	}
 
 	public static void executeProcess(Process process) {
@@ -28,7 +30,7 @@ public class Shell {
 		int temp = 0; // RAM.getI(PC)
 		String instruction = fromIntToInstruction(temp);
 		IR = instruction;
-		executeMachineInstruction(IR, process);
+		executeMachineInstruction(process);
 	}
 
 	public static String asemblerToMachineInstruction(String command) {
@@ -78,7 +80,7 @@ public class Shell {
 			instruction += toBinary(arr[1]);
 			return instruction;
 		} else if (arr[0].equals("JMPL") || arr[0].equals("JMPG") || arr[0].equals("JMPE")) { // npr.: JMPL
-																						// R1,1(value),6(adr)
+			// R1,1(value),6(adr)
 			switch (arr[1]) { // +registar
 			case "R1":
 				instruction += Constants.R1;
@@ -160,83 +162,107 @@ public class Shell {
 
 	}
 
+	// iz dekadnog (adrese i vrijednosti) u binarni (5->00000101)
 	private static String toBinary(String s) {
 		int num = Integer.parseInt(s);
-		return Integer.toBinaryString(num);
+		int binary[] = new int[10];
+		int index = 0;
+		int counter = 0;
+		while (num > 0) {
+			binary[index++] = num % 2;
+			num = num / 2;
+			counter++;
+		}
+		String bin = "";
+		counter = 8 - counter;
+		for (int i = 0; i < counter; i++)
+			bin += "0";
+		for (int i = index - 1; i >= 0; i--) {
+			bin += binary[i];
+		}
+		return bin;
+
 	}
 
-	public static void executeMachineInstruction(String command, Process process) {
-		String operation = command.substring(0, 4);
+	private static void executeMachineInstruction(Process process) {
+		String operation = IR.substring(0, 4);
+		boolean programCounterChanged = false;
 
 		if (operation == Operations.halt) {
 			process.setState(ProcessState.TERMINATED);
 		} else if (operation == Operations.mov) {
-			String r1 = command.substring(4, 8);
-			String r2 = command.substring(8, 12);
+			String r1 = IR.substring(4, 8);
+			String r2 = IR.substring(8, 12);
 			Operations.mov(r1, r2);
 		} else if (operation == Operations.store) {
-			String r1 = command.substring(4, 8);
-			String val2 = command.substring(8, 16);
+			String r1 = IR.substring(4, 8);
+			String val2 = IR.substring(8, 16);
 			Operations.store(r1, val2);
 		} else if (operation == Operations.add) {
-			if (command.length() == 12) { // oba registra
-				String r1 = command.substring(4, 8);
-				String r2 = command.substring(8, 12);
+			if (IR.length() == 12) { // oba registra
+				String r1 = IR.substring(4, 8);
+				String r2 = IR.substring(8, 12);
 				Operations.add(r1, r2);
-			} else if (command.length() == 16) { // registar pa vrijednost
-				String r1 = command.substring(4, 8);
-				String val2 = command.substring(8, 16);
+			} else if (IR.length() == 16) { // registar pa vrijednost
+				String r1 = IR.substring(4, 8);
+				String val2 = IR.substring(8, 16);
 				Operations.add(r1, val2);
 			}
 		} else if (operation == Operations.sub) {
-			if (command.length() == 12) { // oba registra
-				String r1 = command.substring(4, 8);
-				String r2 = command.substring(8, 12);
+			if (IR.length() == 12) { // oba registra
+				String r1 = IR.substring(4, 8);
+				String r2 = IR.substring(8, 12);
 				Operations.sub(r1, r2);
-			} else if (command.length() == 16) { // registar pa vrijednost
-				String r1 = command.substring(4, 8);
-				String val2 = command.substring(8, 16);
+			} else if (IR.length() == 16) { // registar pa vrijednost
+				String r1 = IR.substring(4, 8);
+				String val2 = IR.substring(8, 16);
 				Operations.sub(r1, val2);
 			}
 		} else if (operation == Operations.mul) {
-			if (command.length() == 12) { // oba registra
-				String r1 = command.substring(4, 8);
-				String r2 = command.substring(8, 12);
+			if (IR.length() == 12) { // oba registra
+				String r1 = IR.substring(4, 8);
+				String r2 = IR.substring(8, 12);
 				Operations.mul(r1, r2);
-			} else if (command.length() == 16) { // registar pa vrijednost
-				String r1 = command.substring(4, 8);
-				String val2 = command.substring(8, 16);
+			} else if (IR.length() == 16) { // registar pa vrijednost
+				String r1 = IR.substring(4, 8);
+				String val2 = IR.substring(8, 16);
 				Operations.mul(r1, val2);
 			}
 		} else if (operation == Operations.jmp) {
-			String adr = command.substring(4, 12);
+			String adr = IR.substring(4, 12);
 			Operations.jmp(adr);
+			programCounterChanged = true;
 		} else if (operation == Operations.jmpl) {
-			String reg = command.substring(4, 8);
-			String val = command.substring(8, 16);
-			String adr = command.substring(16, 24);
+			String reg = IR.substring(4, 8);
+			String val = IR.substring(8, 16);
+			String adr = IR.substring(16, 24);
+			programCounterChanged = true;
 			Operations.jmpl(reg, val, adr);
 		} else if (operation == Operations.jmpg) {
-			String reg = command.substring(4, 8);
-			String val = command.substring(8, 16);
-			String adr = command.substring(16, 24);
+			String reg = IR.substring(4, 8);
+			String val = IR.substring(8, 16);
+			String adr = IR.substring(16, 24);
+			programCounterChanged = true;
 			Operations.jmpg(reg, val, adr);
 		} else if (operation == Operations.jmpe) {
-			String reg = command.substring(4, 8);
-			String val = command.substring(8, 16);
-			String adr = command.substring(16, 24);
+			String reg = IR.substring(4, 8);
+			String val = IR.substring(8, 16);
+			String adr = IR.substring(16, 24);
+			programCounterChanged = true;
 			Operations.jmpe(reg, val, adr);
 		} else if (operation == Operations.load) {
-			String r1 = command.substring(4, 8);
-			String adr = command.substring(8, 16);
+			String r1 = IR.substring(4, 8);
+			String adr = IR.substring(8, 16);
 			Operations.load(r1, adr);
 		}
 
+		if (!programCounterChanged)
+			PC++;
 	}
 
 	private static String fromIntToInstruction(int temp) {
-		String help = toBinary(temp + "");
-		if (temp == 0)
+		String help = Integer.toBinaryString(temp);
+		if (help == "0")
 			help = "0000";
 		else if (help.length() <= 12) {
 			while (help.length() < 12)

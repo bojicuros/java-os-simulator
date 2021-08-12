@@ -1,7 +1,5 @@
 package assembler;
 
-import shell.Shell;
-
 public class Operations {
 
 	public static final String halt = "0000";
