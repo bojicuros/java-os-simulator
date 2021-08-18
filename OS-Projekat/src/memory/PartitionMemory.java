@@ -3,17 +3,23 @@ import java.util.ArrayList;
 public class PartitionMemory 
 {
     private int[] data;
-    private int positionInMemory;// DA LI JE POTEBNO
+    private int positionInMemory=-1;
     private int id;
     private int size;
-    private static ArrayList<PartitionMemory> allPartitons; // kada se kreira
-    //public static ArrayList<PartitionMemory> allPartitions=new ArrayList<>();
+    private Process process;
+    private static ArrayList<PartitionMemory> allPartitons; 
     public PartitionMemory(Process process)
     {
-        
+        this.process=process;
         size=process.getSize();
         id=process.getPid();
-        data=process.getData();// promijeni ime funkcije   
+        data=process.getData();
+        allPartitons.add(this); 
+    }
+    public PartitionMemory(int[] data, int id)
+    {
+        this.data=data;
+        this.id=id;
     }
     public static void initialize() 
     {
@@ -37,10 +43,22 @@ public class PartitionMemory
         }
         return null;
     }
+    public static PartitionMemory getPartitionByProcess(Process process)
+    {
+        for (PartitionMemory partitionMemory : allPartitons) 
+        {
+            if(partitionMemory.getProcess().equals(process))
+                return partitionMemory;
+        }
+        return null;
+    }
     public int getSize() {
         return size;
     }
     public int getId() {
         return id;
+    }
+    public Process getProcess() {
+        return process;
     }
 }

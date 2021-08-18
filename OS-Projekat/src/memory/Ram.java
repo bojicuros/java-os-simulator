@@ -3,20 +3,15 @@ public class Ram
     private static final int CAPACITY=1024;
     private static int[] ram=new int[CAPACITY];
     private static int occupied=0;
-/*  //null = nothing = 0
+
     public static void initialize() 
     {
-        
-    }
-    */
-    public static void initialize() 
-    {
-        for (int i : ram) 
+        for (int i = 0; i < CAPACITY; i++) 
         {
-            ram[i]=-1;
-        }    
+             ram[i]=-1;
+        }  
     }
-    public static boolean setAt(int i, int value)
+    public static boolean setAt(int i, int value) 
     {
         if(isOcupied(i))
             return false;
@@ -31,7 +26,9 @@ public class Ram
     
     public static boolean removeSequence(int start, int size) 
     {
-        for(int i=start;i<CAPACITY || i<size+start;i++)
+        if(size+start>=CAPACITY)
+            return false;
+        for(int i=start; i<size+start; i++)
         {
             if(isOcupied(i))
             {
@@ -48,13 +45,14 @@ public class Ram
     public static boolean setSequence(int start, int[] data) 
     {
         //int current=start;
-        for(int i=start; i<CAPACITY || i<data.length+start;i++) 
+        if(start+data.length>=CAPACITY)
+            return false;
+        for(int i=start; i<data.length+start; i++) 
         {
             if(!isOcupied(i))
             {
                 setAt(i, data[i-start]);
             }
-                
             else
                 return false; 
         }   
@@ -62,16 +60,11 @@ public class Ram
     }
     public static boolean setSequence(int start, int size) 
     {
-        for(int i=start; i<CAPACITY || i<size+start;i++) 
-        {
-            if(!isOcupied(i))
-            {
-                setAt(i);
-            }
-            else
-                return false; 
-        }   
-        return true;
+        int[] data=new int[size];
+        for (int i = 0; i < data.length; i++) {
+            data[i]=1;
+        }
+        return setSequence(start, data);
     }
     public static int getAt(int i) 
     {
