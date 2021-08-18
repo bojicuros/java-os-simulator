@@ -7,14 +7,13 @@ import java.util.ArrayList;
 
 import shell.Shell;
 
-public class Process implements Comparable<Process> {
+public class Process {
 
 	private int pid; // Process identifier
 	private String name;
 	private String filePath;
 	private ProcessState state;
 	private ArrayList<String> instructions;
-	private long arrivalTime;
 	private int startAdress; // Address of program instructions in main memory
 	private int[] valuesOfRegisters; // To remember values of registers when switching to next process
 	private int pcValue = -1; // To remember PC value when switching to next process
@@ -30,8 +29,8 @@ public class Process implements Comparable<Process> {
 		ProcessScheduler.readyQueue.add(this);
 	}
 
-	public void readFile() {
-		ArrayList<String> instructions = new ArrayList<>();
+	public void readFile() { // cita asemblerske instrukcije i u listu instructions upisuje masinske
+		ArrayList<String> instructions = new ArrayList<>();                    // instrukcije
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(filePath));
 			for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -41,17 +40,6 @@ public class Process implements Comparable<Process> {
 			br.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	public int loadIntoRAM() {
-		// vraca adresu odakle pocinje proces u ramu
-		return -1;
-	}
-
-	public void instructionsToRAM() {
-		for (int i = 0; i < instructions.size(); i++) {
-			/* RAM.setI(startAdress+i, Integer.parseInt(instructions.get(i))) */
 		}
 	}
 
@@ -86,14 +74,6 @@ public class Process implements Comparable<Process> {
 
 	public void setState(ProcessState state) {
 		this.state = state;
-	}
-
-	public long getArrivalTime() {
-		return arrivalTime;
-	}
-
-	public void setArrivalTime(long time) {
-		arrivalTime = time;
 	}
 
 	public String getFilePath() {
@@ -135,13 +115,7 @@ public class Process implements Comparable<Process> {
 
 	@Override
 	public String toString() {
-		return "Process [pid=" + pid + ", name=" + name + ", state=" + state + ", cpuUsage=" + ", arrivalTime="
-				+ arrivalTime + "]";
-	}
-
-	@Override
-	public int compareTo(Process o) {
-		return (int) (this.arrivalTime - o.arrivalTime);
+		return "Process [pid=" + pid + ", name=" + name + ", state=" + state + "]";
 	}
 
 }

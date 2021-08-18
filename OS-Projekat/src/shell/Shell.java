@@ -5,13 +5,21 @@ import java.io.File;
 import assembler.Constants;
 import assembler.Operations;
 import kernel.Process;
-import kernel.ProcessState;
+import kernel.ProcessScheduler;
+import memory.MemoryManager;
 
 public class Shell {
 
 	public static File workingDirectory;
+	public static MemoryManager manager;
+	public static Process currentlyExecuting = null;
 	public static int PC; // Program counter
 	public static String IR; // Instruction register
+
+	public static void main(String[] args) {
+		manager = new MemoryManager();
+		ProcessScheduler.getReady();
+	}
 
 	public static String asemblerToMachineInstruction(String command) {
 		String instruction = "";
@@ -161,7 +169,6 @@ public class Shell {
 			bin += binary[i];
 		}
 		return bin;
-
 	}
 
 	public static void executeMachineInstruction(Process process) {
@@ -169,7 +176,7 @@ public class Shell {
 		boolean programCounterChanged = false;
 
 		if (operation == Operations.halt) {
-			process.setState(ProcessState.DONE);
+			Operations.halt();
 		} else if (operation == Operations.mov) {
 			String r1 = IR.substring(4, 8);
 			String r2 = IR.substring(8, 12);

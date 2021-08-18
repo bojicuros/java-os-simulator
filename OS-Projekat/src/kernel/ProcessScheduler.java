@@ -1,8 +1,10 @@
 package kernel;
 
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.Queue;
 
+import memory.Ram;
 import shell.Shell;
 
 public class ProcessScheduler {
@@ -11,7 +13,12 @@ public class ProcessScheduler {
 	public static ArrayList<Process> allProcesses;
 	private static int timeQuantum = 10; // ms
 
-	public static void start() {
+	public static void getReady() {
+		readyQueue = new LinkedList<>();
+		allProcesses = new ArrayList<>();
+	}
+
+	public static void start() { // pokrece izvrsavanja svih procesa
 		while (!readyQueue.isEmpty()) {
 			Process next = readyQueue.poll();
 			executeProcess(next);
@@ -25,25 +32,24 @@ public class ProcessScheduler {
 		System.out.println("There are no processes to be executed");
 	}
 
-	public static void executeProcess(Process process) {
-		long startTime = System.currentTimeMillis();
+	private static void executeProcess(Process process) {
 		if (process.getPcValue() == -1) { // we need to start process
 			System.out.println("Process " + process.getName() + " started to execute");
-			int startAdress = process.loadIntoRAM();
+			int startAdress = Shell.manager.loadProcess(process);
 			process.setStartAdress(startAdress);
 			Shell.PC = process.getStartAdress();
 			process.setState(ProcessState.RUNNING);
-			execute(process, startTime);
+			execute(process, System.currentTimeMillis());
 		} else { // we need to continue process
 			System.out.println("Process " + process.getName() + " is executing again");
 			Shell.loadValues(process);
-			execute(process, startTime);
+			execute(process, System.currentTimeMillis());
 		}
 	}
 
 	private static void execute(Process process, long startTime) {
 		while (process.getState() == ProcessState.RUNNING && startTime - System.currentTimeMillis() < timeQuantum) {
-			int temp = 0; // RAM.getI(PC)
+			int temp = Ram.getAt(Shell.PC);
 			String instruction = Shell.fromIntToInstruction(temp);
 			Shell.IR = instruction;
 			Shell.executeMachineInstruction(process);
@@ -54,13 +60,6 @@ public class ProcessScheduler {
 			System.out.println("You have terminated process " + process.getName());
 		else if (process.getState() == ProcessState.DONE)
 			System.out.println("Process " + process.getName() + " is done");
-	}
-
-	public static void loadProcess(String filePath) {
-		Process newProcess = new Process(allProcesses.size(), filePath);
-		newProcess.setArrivalTime(System.currentTimeMillis());
-		allProcesses.add(newProcess);
-		newProcess.readFile();
 	}
 
 	public static void blockProcess(String name) {

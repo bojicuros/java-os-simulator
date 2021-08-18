@@ -1,5 +1,8 @@
 package assembler;
 
+import kernel.ProcessState;
+import shell.Shell;
+
 public class Operations {
 
 	public static final String halt = "0000";
@@ -117,31 +120,36 @@ public class Operations {
 	}
 
 	public static void jmp(String adr) {
-		// pc
+		int temp = Integer.parseInt(adr);
+		Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 	}
 
 	public static void jmpl(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null && r.value == Integer.parseInt(val)) {
+		if (r != null && r.value < Integer.parseInt(val)) {
+			int temp = Integer.parseInt(adr);
+			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 		}
-		// pc
 	}
 
 	public static void jmpg(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null && r.value == Integer.parseInt(val)) {
+		if (r != null && r.value > Integer.parseInt(val)) {
+			int temp = Integer.parseInt(adr);
+			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 		}
-		// pc
 	}
 
-	public static void jmpe(String reg, String value, String adr) {
+	public static void jmpe(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null) {
-		} // && r.value == Memory.getValue(value)
-			// pc
+		if (r != null && r.value == Integer.parseInt(val)) {
+			int temp = Integer.parseInt(adr);
+			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+		}
 	}
 
 	public static void halt() {
+		Shell.currentlyExecuting.setState(ProcessState.DONE);
 	}
 
 }
