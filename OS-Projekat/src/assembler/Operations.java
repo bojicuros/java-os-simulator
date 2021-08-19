@@ -1,6 +1,7 @@
 package assembler;
 
 import kernel.ProcessState;
+import memory.Ram;
 import shell.Shell;
 
 public class Operations {
@@ -44,13 +45,14 @@ public class Operations {
 	public static int store(String reg, String value) {
 		Register r = getRegister(reg);
 		if (r != null) {
-			// ...
+			//
 		}
 		return -1;
 	}
 
 	public static void load(String reg, String adr) {
-		// ...
+		Register r = getRegister(reg);
+		r.value = Ram.getAt(Integer.parseInt(adr,2));
 	}
 
 	// postavlja vrijednost registra1 na registar2
@@ -68,7 +70,7 @@ public class Operations {
 		Register r1 = getRegister(reg1);
 		if (value.length() == 8) { // vrijednost
 			if (r1 != null) {
-				r1.value += Integer.parseInt(value);
+				r1.value += Integer.parseInt(value,2);
 				return r1.value;
 			}
 		} else if (value.length() == 4) { // registar
@@ -87,7 +89,7 @@ public class Operations {
 		Register r1 = getRegister(reg1);
 		if (value.length() == 8) { // vrijednost
 			if (r1 != null) {
-				r1.value -= Integer.parseInt(value);
+				r1.value -= Integer.parseInt(value,2);
 				return r1.value;
 			}
 		} else if (value.length() == 4) { // registar
@@ -106,7 +108,7 @@ public class Operations {
 		Register r1 = getRegister(reg1);
 		if (value.length() == 8) { // vrijednost
 			if (r1 != null) {
-				r1.value *= Integer.parseInt(value);
+				r1.value *= Integer.parseInt(value,2);
 				return r1.value;
 			}
 		} else if (value.length() == 4) { // registar
@@ -120,30 +122,30 @@ public class Operations {
 	}
 
 	public static void jmp(String adr) {
-		int temp = Integer.parseInt(adr);
+		int temp = Integer.parseInt(adr,2);
 		Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 	}
 
 	public static void jmpl(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null && r.value < Integer.parseInt(val)) {
-			int temp = Integer.parseInt(adr);
+		if (r != null && r.value < Integer.parseInt(val,2)) {
+			int temp = Integer.parseInt(adr,2);
 			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 		}
 	}
 
 	public static void jmpg(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null && r.value > Integer.parseInt(val)) {
-			int temp = Integer.parseInt(adr);
+		if (r != null && r.value > Integer.parseInt(val,2)) {
+			int temp = Integer.parseInt(adr,2);
 			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 		}
 	}
 
 	public static void jmpe(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null && r.value == Integer.parseInt(val)) {
-			int temp = Integer.parseInt(adr);
+		if (r != null && r.value == Integer.parseInt(val,2)) {
+			int temp = Integer.parseInt(adr,2);
 			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 		}
 	}
