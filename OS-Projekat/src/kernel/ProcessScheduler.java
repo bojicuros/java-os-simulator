@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.Queue;
 
+import assembler.Operations;
 import memory.Ram;
 import shell.Shell;
 
@@ -11,7 +12,7 @@ public class ProcessScheduler {
 
 	public static Queue<Process> readyQueue;
 	public static ArrayList<Process> allProcesses;
-	private static int timeQuantum = 10; // ms
+	private static int timeQuantum = 1; // ms
 
 	public static void getReady() {
 		readyQueue = new LinkedList<>();
@@ -22,10 +23,9 @@ public class ProcessScheduler {
 		while (!readyQueue.isEmpty()) {
 			Process next = readyQueue.poll();
 			executeProcess(next);
-			if (next.getState() != ProcessState.BLOCKED || next.getState() != ProcessState.TERMINATED
-					|| next.getState() != ProcessState.DONE) {
+			if (next.getState() != ProcessState.BLOCKED && next.getState() != ProcessState.TERMINATED
+					&& next.getState() != ProcessState.DONE) {
 				next.setState(ProcessState.READY);
-				Shell.saveValues(next);
 				readyQueue.add(next);
 			}
 		}
@@ -33,6 +33,7 @@ public class ProcessScheduler {
 	}
 
 	private static void executeProcess(Process process) {
+		Shell.currentlyExecuting = process;
 		if (process.getPcValue() == -1) { // we need to start process
 			System.out.println("Process " + process.getName() + " started to execute");
 			int startAdress = Shell.manager.loadProcess(process);
@@ -42,24 +43,34 @@ public class ProcessScheduler {
 			execute(process, System.currentTimeMillis());
 		} else { // we need to continue process
 			System.out.println("Process " + process.getName() + " is executing again");
-			Shell.loadValues(process);
+			Shell.loadValues();
+			int startAdress = Shell.manager.loadProcess(process);
+			process.setStartAdress(startAdress);
+			process.setState(ProcessState.RUNNING);
 			execute(process, System.currentTimeMillis());
 		}
 	}
 
 	private static void execute(Process process, long startTime) {
-		while (process.getState() == ProcessState.RUNNING && startTime - System.currentTimeMillis() < timeQuantum) {
+		while (process.getState() == ProcessState.RUNNING && System.currentTimeMillis() - startTime < timeQuantum) {
 			int temp = Ram.getAt(Shell.PC);
 			String instruction = Shell.fromIntToInstruction(temp);
 			Shell.IR = instruction;
-			Shell.executeMachineInstruction(process);
+			Shell.executeMachineInstruction();
 		}
-		if (process.getState() == ProcessState.BLOCKED)
+
+		if (process.getState() == ProcessState.BLOCKED) {
 			System.out.println("Process " + process.getName() + " is blocked");
-		else if (process.getState() == ProcessState.TERMINATED)
+			Shell.saveValues();
+		} else if (process.getState() == ProcessState.TERMINATED) {
 			System.out.println("You have terminated process " + process.getName());
-		else if (process.getState() == ProcessState.DONE)
+		} else if (process.getState() == ProcessState.DONE) {
 			System.out.println("Process " + process.getName() + " is done");
+			Operations.printRegisters();
+		} else { // process is switched by process scheduler
+			Shell.saveValues();
+		}
+		Operations.clearRegisters();
 	}
 
 	public static void blockProcess(String name) {

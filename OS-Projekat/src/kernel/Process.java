@@ -18,19 +18,20 @@ public class Process {
 	private int[] valuesOfRegisters; // To remember values of registers when switching to next process
 	private int pcValue = -1; // To remember PC value when switching to next process
 
-	public Process(int pid, String filePath) {
-		this.pid = pid;
+	public Process(String filePath) {
+		this.pid = ProcessScheduler.allProcesses.size();
 		state = ProcessState.READY;
 		this.filePath = filePath;
 		name = fileName(filePath);
 		instructions = new ArrayList<>();
+		valuesOfRegisters = new int[5];
 		readFile();
 		ProcessScheduler.allProcesses.add(this);
 		ProcessScheduler.readyQueue.add(this);
 	}
 
 	public void readFile() { // cita asemblerske instrukcije i u listu instructions upisuje masinske
-		ArrayList<String> instructions = new ArrayList<>();                    // instrukcije
+								// instrukcije
 		try {
 			BufferedReader br = new BufferedReader(new FileReader(filePath));
 			for (String line = br.readLine(); line != null; line = br.readLine()) {
@@ -53,7 +54,8 @@ public class Process {
 	}
 
 	public void unblock() {
-		this.state = ProcessState.RUNNING;
+		this.state = ProcessState.READY;
+		ProcessScheduler.readyQueue.add(this);
 	}
 
 	public void terminate() {

@@ -18,7 +18,7 @@ public class MemoryManager {
 		if (partitionMemory == null) // provjerava da li je vec korsten taj proces
 			return loadPartition(new PartitionMemory(process));
 		else
-			return loadPartition(partitionMemory);
+			return process.getStartAdress();
 	}
 
 	public int loadPartition(PartitionMemory partiton) {
@@ -67,9 +67,9 @@ public class MemoryManager {
 	private int load(int[] data) // ucitava podatke u RAM po pricipu najbolje odgovarajuce particije
 	{
 		int size = data.length;
-		if (size > Ram.getFreeSpace()) // ako nema mjesta vraca -1
+		if (size > Ram.getFreeSpace()) // ako nema mjesta pravimo mjesto
 		{
-			return -1;
+			makeSpace(size);
 		}
 		int bestPosition = -1, bestFitSize = Integer.MAX_VALUE;
 		int currentPosition = -1, currentSize = 0;
@@ -103,11 +103,18 @@ public class MemoryManager {
 			defragmentation(); // sazimanje
 			bestPosition = Ram.getOccupiedSpace();// kada su podaci sazeti prva slobodna pozicija je na kraju
 		}
-
 		if (Ram.setSequence(bestPosition, data))// postavlja podatke na najbolju poziciju
 			return bestPosition;
+		return bestPosition;
+	}
 
-		return -1;
+	private void makeSpace(int size) {
+		PartitionMemory lastAdded = partitionsInRam.get(partitionsInRam.size() - 1);
+		while (size > Ram.getFreeSpace()) {
+			removePartition(lastAdded);
+			if (!partitionsInRam.isEmpty())
+				lastAdded = partitionsInRam.get(partitionsInRam.size() - 1);
+		}
 	}
 
 	private void defragmentation() {

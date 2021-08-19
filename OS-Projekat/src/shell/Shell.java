@@ -19,6 +19,11 @@ public class Shell {
 	public static void main(String[] args) {
 		manager = new MemoryManager();
 		ProcessScheduler.getReady();
+		new Process("petlja.txt");
+		new Process("stepen.txt");
+		new Process("factorial.txt");
+		//on execute
+		ProcessScheduler.start();
 	}
 
 	public static String asemblerToMachineInstruction(String command) {
@@ -171,21 +176,21 @@ public class Shell {
 		return bin;
 	}
 
-	public static void executeMachineInstruction(Process process) {
+	public static void executeMachineInstruction() {
 		String operation = IR.substring(0, 4);
 		boolean programCounterChanged = false;
 
-		if (operation == Operations.halt) {
+		if (operation.equals(Operations.halt)) {
 			Operations.halt();
-		} else if (operation == Operations.mov) {
+		} else if (operation.equals(Operations.mov)) {
 			String r1 = IR.substring(4, 8);
 			String r2 = IR.substring(8, 12);
 			Operations.mov(r1, r2);
-		} else if (operation == Operations.store) {
+		} else if (operation.equals(Operations.store)) {
 			String r1 = IR.substring(4, 8);
 			String val2 = IR.substring(8, 16);
 			Operations.store(r1, val2);
-		} else if (operation == Operations.add) {
+		} else if (operation.equals(Operations.add)) {
 			if (IR.length() == 12) { // oba registra
 				String r1 = IR.substring(4, 8);
 				String r2 = IR.substring(8, 12);
@@ -195,7 +200,7 @@ public class Shell {
 				String val2 = IR.substring(8, 16);
 				Operations.add(r1, val2);
 			}
-		} else if (operation == Operations.sub) {
+		} else if (operation.equals(Operations.sub)) {
 			if (IR.length() == 12) { // oba registra
 				String r1 = IR.substring(4, 8);
 				String r2 = IR.substring(8, 12);
@@ -205,7 +210,7 @@ public class Shell {
 				String val2 = IR.substring(8, 16);
 				Operations.sub(r1, val2);
 			}
-		} else if (operation == Operations.mul) {
+		} else if (operation.equals(Operations.mul)) {
 			if (IR.length() == 12) { // oba registra
 				String r1 = IR.substring(4, 8);
 				String r2 = IR.substring(8, 12);
@@ -215,34 +220,30 @@ public class Shell {
 				String val2 = IR.substring(8, 16);
 				Operations.mul(r1, val2);
 			}
-		} else if (operation == Operations.jmp) {
+		} else if (operation.equals(Operations.jmp)) {
 			String adr = IR.substring(4, 12);
 			Operations.jmp(adr);
 			programCounterChanged = true;
-		} else if (operation == Operations.jmpl) {
+		} else if (operation.equals(Operations.jmpl)) {
 			String reg = IR.substring(4, 8);
 			String val = IR.substring(8, 16);
 			String adr = IR.substring(16, 24);
-			programCounterChanged = true;
-			Operations.jmpl(reg, val, adr);
-		} else if (operation == Operations.jmpg) {
+			programCounterChanged = Operations.jmpl(reg, val, adr);
+		} else if (operation.equals(Operations.jmpg)) {
 			String reg = IR.substring(4, 8);
 			String val = IR.substring(8, 16);
 			String adr = IR.substring(16, 24);
-			programCounterChanged = true;
-			Operations.jmpg(reg, val, adr);
-		} else if (operation == Operations.jmpe) {
+			programCounterChanged = Operations.jmpg(reg, val, adr);
+		} else if (operation.equals(Operations.jmpe)) {
 			String reg = IR.substring(4, 8);
 			String val = IR.substring(8, 16);
 			String adr = IR.substring(16, 24);
-			programCounterChanged = true;
-			Operations.jmpe(reg, val, adr);
-		} else if (operation == Operations.load) {
+			programCounterChanged = Operations.jmpe(reg, val, adr);
+		} else if (operation.equals(Operations.load)) {
 			String r1 = IR.substring(4, 8);
 			String adr = IR.substring(8, 16);
 			Operations.load(r1, adr);
 		}
-
 		if (!programCounterChanged)
 			PC++;
 	}
@@ -264,21 +265,21 @@ public class Shell {
 		return help;
 	}
 
-	public static void saveValues(Process p) {
+	public static void saveValues() {
 		int[] registers = { Operations.R1.value, Operations.R2.value, Operations.R3.value, Operations.R4.value,
 				Operations.R5.value };
-		p.setValuesOfRegisters(registers);
-		p.setPcValue(PC);
+		currentlyExecuting.setValuesOfRegisters(registers);
+		currentlyExecuting.setPcValue(PC);
 	}
 
-	public static void loadValues(Process p) {
-		int[] registers = p.getValuesOfRegisters();
+	public static void loadValues() {
+		int[] registers = currentlyExecuting.getValuesOfRegisters();
 		Operations.R1.value = registers[0];
 		Operations.R2.value = registers[1];
 		Operations.R3.value = registers[2];
 		Operations.R4.value = registers[3];
 		Operations.R5.value = registers[4];
-		PC = p.getPcValue();
+		PC = currentlyExecuting.getPcValue();
 	}
 
 }

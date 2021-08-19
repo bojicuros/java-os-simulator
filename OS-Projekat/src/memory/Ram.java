@@ -5,6 +5,12 @@ public class Ram {
 	private static final int CAPACITY = 1024;
 	private static int[] ram = new int[CAPACITY];
 	private static int occupied = 0;
+	
+	public static void printRAM() {
+		for(int i=0;i<CAPACITY;i++) {
+			System.out.println(ram[i]);
+		}
+	}
 
 	public static void initialize() {
 		for (int i = 0; i < CAPACITY; i++) {
@@ -44,7 +50,8 @@ public class Ram {
 		for (int i = start; i < data.length + start; i++) {
 			if (!isOcupied(i)) {
 				setAt(i, data[i - start]);
-			} else
+			}
+			 else
 				return false;
 		}
 		return true;

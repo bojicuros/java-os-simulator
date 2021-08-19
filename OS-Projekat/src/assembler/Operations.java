@@ -1,7 +1,6 @@
 package assembler;
 
 import kernel.ProcessState;
-import memory.Ram;
 import shell.Shell;
 
 public class Operations {
@@ -24,35 +23,16 @@ public class Operations {
 	public static Register R4 = new Register("R4", Constants.R4, 0);
 	public static Register R5 = new Register("R5", Constants.R5, 0);
 
-	// vraca registar na osnovu adrese registra
-	public static Register getRegister(String adr) {
-		switch (adr) {
-		case Constants.R1:
-			return R1;
-		case Constants.R2:
-			return R2;
-		case Constants.R3:
-			return R3;
-		case Constants.R4:
-			return R4;
-		case Constants.R5:
-			return R5;
-		default:
-			return null;
-		}
-	}
-
 	public static int store(String reg, String value) {
 		Register r = getRegister(reg);
 		if (r != null) {
-			//
+			// ...
 		}
 		return -1;
 	}
 
 	public static void load(String reg, String adr) {
-		Register r = getRegister(reg);
-		r.value = Ram.getAt(Integer.parseInt(adr,2));
+		// ...
 	}
 
 	// postavlja vrijednost registra1 na registar2
@@ -70,7 +50,7 @@ public class Operations {
 		Register r1 = getRegister(reg1);
 		if (value.length() == 8) { // vrijednost
 			if (r1 != null) {
-				r1.value += Integer.parseInt(value,2);
+				r1.value += Integer.parseInt(value, 2);
 				return r1.value;
 			}
 		} else if (value.length() == 4) { // registar
@@ -89,7 +69,7 @@ public class Operations {
 		Register r1 = getRegister(reg1);
 		if (value.length() == 8) { // vrijednost
 			if (r1 != null) {
-				r1.value -= Integer.parseInt(value,2);
+				r1.value -= Integer.parseInt(value, 2);
 				return r1.value;
 			}
 		} else if (value.length() == 4) { // registar
@@ -108,7 +88,7 @@ public class Operations {
 		Register r1 = getRegister(reg1);
 		if (value.length() == 8) { // vrijednost
 			if (r1 != null) {
-				r1.value *= Integer.parseInt(value,2);
+				r1.value *= Integer.parseInt(value, 2);
 				return r1.value;
 			}
 		} else if (value.length() == 4) { // registar
@@ -122,36 +102,76 @@ public class Operations {
 	}
 
 	public static void jmp(String adr) {
-		int temp = Integer.parseInt(adr,2);
+		int temp = Integer.parseInt(adr, 2);
 		Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 	}
 
-	public static void jmpl(String reg, String val, String adr) {
+	public static boolean jmpl(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null && r.value < Integer.parseInt(val,2)) {
-			int temp = Integer.parseInt(adr,2);
+		if (r != null && r.value < Integer.parseInt(val, 2)) {
+			int temp = Integer.parseInt(adr, 2);
 			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+			return true;
 		}
+		return false;
 	}
 
-	public static void jmpg(String reg, String val, String adr) {
+	public static boolean jmpg(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null && r.value > Integer.parseInt(val,2)) {
-			int temp = Integer.parseInt(adr,2);
+		if (r != null && r.value > Integer.parseInt(val, 2)) {
+			int temp = Integer.parseInt(adr, 2);
 			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+			return true;
 		}
+		return false;
 	}
 
-	public static void jmpe(String reg, String val, String adr) {
+	public static boolean jmpe(String reg, String val, String adr) {
 		Register r = getRegister(reg);
-		if (r != null && r.value == Integer.parseInt(val,2)) {
-			int temp = Integer.parseInt(adr,2);
+		if (r != null && r.value == Integer.parseInt(val, 2)) {
+			int temp = Integer.parseInt(adr, 2);
 			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+			return false;
 		}
+		return false;
 	}
 
 	public static void halt() {
 		Shell.currentlyExecuting.setState(ProcessState.DONE);
+	}
+
+	// vraca registar na osnovu adrese registra
+	private static Register getRegister(String adr) {
+		switch (adr) {
+		case Constants.R1:
+			return R1;
+		case Constants.R2:
+			return R2;
+		case Constants.R3:
+			return R3;
+		case Constants.R4:
+			return R4;
+		case Constants.R5:
+			return R5;
+		default:
+			return null;
+		}
+	}
+
+	public static void printRegisters() {
+		System.out.println("R1 value - [ " + R1.value + " ]");
+		System.out.println("R2 value - [ " + R2.value + " ]");
+		System.out.println("R3 value - [ " + R3.value + " ]");
+		System.out.println("R4 value - [ " + R4.value + " ]");
+		System.out.println("R5 value - [ " + R5.value + " ]");
+	}
+
+	public static void clearRegisters() {
+		R1.value = 0;
+		R2.value = 0;
+		R3.value = 0;
+		R4.value = 0;
+		R5.value = 0;
 	}
 
 }

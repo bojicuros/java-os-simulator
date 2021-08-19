@@ -90,7 +90,6 @@ public class ShellCommands {
 				ShellExe.trmpr(parameter);
 			} else
 				st = errorWithParameters();
-
 			break;
 
 		case "blpr": // block process
