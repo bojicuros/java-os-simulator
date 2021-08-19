@@ -5,7 +5,6 @@ import java.io.File;
 import assembler.Constants;
 import assembler.Operations;
 import kernel.Process;
-import kernel.ProcessScheduler;
 import memory.MemoryManager;
 
 public class Shell {
@@ -16,15 +15,6 @@ public class Shell {
 	public static int PC; // Program counter
 	public static String IR; // Instruction register
 
-	public static void main(String[] args) {
-		manager = new MemoryManager();
-		ProcessScheduler.getReady();
-		new Process("petlja.txt");
-		new Process("stepen.txt");
-		new Process("factorial.txt");
-		//on execute
-		ProcessScheduler.start();
-	}
 
 	public static String asemblerToMachineInstruction(String command) {
 		String instruction = "";
@@ -81,7 +71,8 @@ public class Shell {
 		} else if (arr[0].equals("JMP")) { // npr: JMP 5(adr)
 			instruction += toBinary(arr[1]);
 			return instruction;
-		} else if (arr[0].equals("JMPL") || arr[0].equals("JMPG") || arr[0].equals("JMPE") || arr[0].equals("JMPD")) { // npr.: JMPL
+		} else if (arr[0].equals("JMPL") || arr[0].equals("JMPG") || arr[0].equals("JMPE") || arr[0].equals("JMPD")) { // npr.:
+																														// JMPL
 			// R1,1(value),6(adr)
 			switch (arr[1]) { // +registar
 			case "R1":
@@ -102,6 +93,25 @@ public class Shell {
 			}
 			instruction += toBinary(arr[2]); // +vrijendost
 			instruction += toBinary(arr[3]); // +adresa
+			return instruction;
+		} else if (arr[0].equals("INC") || arr[0].equals("DEC")) {
+			switch (arr[1]) { // +registar
+			case "R1":
+				instruction += Constants.R1;
+				break;
+			case "R2":
+				instruction += Constants.R2;
+				break;
+			case "R3":
+				instruction += Constants.R3;
+				break;
+			case "R4":
+				instruction += Constants.R4;
+				break;
+			case "R5":
+				instruction += Constants.R5;
+				break;
+			}
 			return instruction;
 		} else if (arr[2].equals("R1") || arr[2].equals("R2") || arr[2].equals("R3") || arr[2].equals("R4")
 				|| arr[2].equals("R5")) { // ako su oba argumenta registri (MOV,ADD,SUB,MUL)
@@ -252,15 +262,15 @@ public class Shell {
 			String r1 = IR.substring(4, 8);
 			String adr = IR.substring(8, 16);
 			Operations.load(r1, adr);
-		} else if (operation.equals(Operations.jmpd)){
+		} else if (operation.equals(Operations.jmpd)) {
 			String reg = IR.substring(4, 8);
 			String val = IR.substring(8, 16);
 			String adr = IR.substring(16, 24);
 			programCounterChanged = Operations.jmpe(reg, val, adr);
-		} else if(operation.equals(Operations.inc)){
+		} else if (operation.equals(Operations.inc)) {
 			String reg = IR.substring(4, 8);
 			Operations.inc(reg);
-		} else if(operation.equals(Operations.dec)){
+		} else if (operation.equals(Operations.dec)) {
 			String reg = IR.substring(4, 8);
 			Operations.dec(reg);
 		}
@@ -272,6 +282,8 @@ public class Shell {
 		String help = Integer.toBinaryString(temp);
 		if (help == "0")
 			help = "0000";
+		else if(help.length()==8)
+			return help;
 		else if (help.length() <= 12) {
 			while (help.length() < 12)
 				help = "0" + help;

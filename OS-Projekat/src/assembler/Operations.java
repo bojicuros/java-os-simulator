@@ -29,14 +29,14 @@ public class Operations {
 
 	public static void store(String reg, String adr) {
 		Register r = getRegister(reg);
-		if (r != null) 
-			Ram.setAt(Integer.parseInt(adr,2));
+		if (r != null)
+			Ram.setAt(Integer.parseInt(adr, 2));
 	}
 
 	public static void load(String reg, String adr) {
 		Register r = getRegister(reg);
-		if ( r != null)
-			r.value = Ram.getAt(Integer.parseInt(adr,2));
+		if (r != null)
+			r.value = Ram.getAt(Integer.parseInt(adr, 2));
 	}
 
 	// postavlja vrijednost registra1 na registar2
@@ -50,59 +50,44 @@ public class Operations {
 
 	// sabira vrijednosti 1. i 2. registra i cuva je na 1. registru, ako je nemoguce
 	// vraca -1
-	public static int add(String reg1, String value) {
-		Register r1 = getRegister(reg1);
-		if (value.length() == 8) { // vrijednost
-			if (r1 != null) {
-				r1.value += Integer.parseInt(value, 2);
-				return r1.value;
-			}
-		} else if (value.length() == 4) { // registar
-			Register r2 = getRegister(value);
-			if (r1 != null && r2 != null) {
-				r1.value += r2.value;
-				return r1.value;
-			}
+	public static void add(String reg, String val) {
+		Register r = getRegister(reg);
+		if (val.length() == 8) { // vrijednost
+			if (r != null)
+				r.value += Integer.parseInt(val, 2);
+		} else if (val.length() == 4) { // registar
+			Register r2 = getRegister(val);
+			if (r != null && r2 != null)
+				r.value += r2.value;
 		}
-		return -1;
 	}
 
 	// oduzima vrijednosti 1. i 2. registra i cuva je na 1. registru, ako je
 	// nemoguce vraca -1
-	public static int sub(String reg1, String value) {
-		Register r1 = getRegister(reg1);
-		if (value.length() == 8) { // vrijednost
-			if (r1 != null) {
-				r1.value -= Integer.parseInt(value, 2);
-				return r1.value;
-			}
-		} else if (value.length() == 4) { // registar
-			Register r2 = getRegister(value);
-			if (r1 != null && r2 != null) {
-				r1.value -= r2.value;
-				return r1.value;
-			}
+	public static void sub(String reg, String val) {
+		Register r = getRegister(reg);
+		if (val.length() == 8) { // vrijednost
+			if (r != null)
+				r.value -= Integer.parseInt(val, 2);
+		} else if (val.length() == 4) { // registar
+			Register r2 = getRegister(val);
+			if (r != null && r2 != null)
+				r.value -= r2.value;
 		}
-		return -1;
 	}
 
 	// mnozi vrijednosti 1. i 2. registra i cuva je na 1. registru, ako je nemoguce
 	// vraca -1
-	public static int mul(String reg1, String value) {
-		Register r1 = getRegister(reg1);
-		if (value.length() == 8) { // vrijednost
-			if (r1 != null) {
-				r1.value *= Integer.parseInt(value, 2);
-				return r1.value;
-			}
-		} else if (value.length() == 4) { // registar
-			Register r2 = getRegister(value);
-			if (r1 != null && r2 != null) {
-				r1.value *= r2.value;
-				return r1.value;
-			}
+	public static void mul(String reg, String val) {
+		Register r = getRegister(reg);
+		if (val.length() == 8) { // vrijednost
+			if (r != null) 
+				r.value *= Integer.parseInt(val, 2);
+		} else if (val.length() == 4) { // registar
+			Register r2 = getRegister(val);
+			if (r != null && r2 != null)
+				r.value *= r2.value;
 		}
-		return -1;
 	}
 
 	public static void jmp(String adr) {
@@ -117,6 +102,7 @@ public class Operations {
 			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 			return true;
 		}
+
 		return false;
 	}
 
@@ -150,12 +136,12 @@ public class Operations {
 		return false;
 	}
 
-	public static void inc(String reg){
+	public static void inc(String reg) {
 		Register r = getRegister(reg);
 		r.value += 1;
 	}
 
-	public static void dec(String reg){
+	public static void dec(String reg) {
 		Register r = getRegister(reg);
 		r.value -= 1;
 	}
