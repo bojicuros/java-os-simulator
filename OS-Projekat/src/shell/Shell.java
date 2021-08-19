@@ -62,6 +62,15 @@ public class Shell {
 		case "JMPE":
 			instruction += Operations.jmpe;
 			break;
+		case "JMPD":
+			instruction += Operations.jmpd;
+			break;
+		case "INC":
+			instruction += Operations.inc;
+			break;
+		case "DEC":
+			instruction += Operations.dec;
+			break;
 		case "LOAD":
 			instruction += Operations.load;
 			break;
@@ -72,7 +81,7 @@ public class Shell {
 		} else if (arr[0].equals("JMP")) { // npr: JMP 5(adr)
 			instruction += toBinary(arr[1]);
 			return instruction;
-		} else if (arr[0].equals("JMPL") || arr[0].equals("JMPG") || arr[0].equals("JMPE")) { // npr.: JMPL
+		} else if (arr[0].equals("JMPL") || arr[0].equals("JMPG") || arr[0].equals("JMPE") || arr[0].equals("JMPD")) { // npr.: JMPL
 			// R1,1(value),6(adr)
 			switch (arr[1]) { // +registar
 			case "R1":
@@ -243,6 +252,17 @@ public class Shell {
 			String r1 = IR.substring(4, 8);
 			String adr = IR.substring(8, 16);
 			Operations.load(r1, adr);
+		} else if (operation.equals(Operations.jmpd)){
+			String reg = IR.substring(4, 8);
+			String val = IR.substring(8, 16);
+			String adr = IR.substring(16, 24);
+			programCounterChanged = Operations.jmpe(reg, val, adr);
+		} else if(operation.equals(Operations.inc)){
+			String reg = IR.substring(4, 8);
+			Operations.inc(reg);
+		} else if(operation.equals(Operations.dec)){
+			String reg = IR.substring(4, 8);
+			Operations.dec(reg);
 		}
 		if (!programCounterChanged)
 			PC++;

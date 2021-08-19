@@ -16,6 +16,9 @@ public class Operations {
 	public static final String jmpg = "1000";
 	public static final String jmpe = "1001";
 	public static final String load = "1010";
+	public static final String jmpd = "1011";
+	public static final String dec = "1100";
+	public static final String inc = "1101";
 
 	public static Register R1 = new Register("R1", Constants.R1, 0);
 	public static Register R2 = new Register("R2", Constants.R2, 0);
@@ -131,9 +134,29 @@ public class Operations {
 		if (r != null && r.value == Integer.parseInt(val, 2)) {
 			int temp = Integer.parseInt(adr, 2);
 			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
-			return false;
+			return true;
 		}
 		return false;
+	}
+
+	public static boolean jmpd(String reg, String val, String adr) {
+		Register r = getRegister(reg);
+		if (r != null && r.value != Integer.parseInt(val, 2)) {
+			int temp = Integer.parseInt(adr, 2);
+			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+			return true;
+		}
+		return false;
+	}
+
+	public static void inc(String reg){
+		Register r = getRegister(reg);
+		r.value += 1;
+	}
+
+	public static void dec(String reg){
+		Register r = getRegister(reg);
+		r.value -= 1;
 	}
 
 	public static void halt() {
