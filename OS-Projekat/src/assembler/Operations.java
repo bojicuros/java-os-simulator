@@ -1,6 +1,7 @@
 package assembler;
 
 import kernel.ProcessState;
+import memory.Ram;
 import shell.Shell;
 
 public class Operations {
@@ -26,16 +27,16 @@ public class Operations {
 	public static Register R4 = new Register("R4", Constants.R4, 0);
 	public static Register R5 = new Register("R5", Constants.R5, 0);
 
-	public static int store(String reg, String value) {
+	public static void store(String reg, String adr) {
 		Register r = getRegister(reg);
-		if (r != null) {
-			// ...
-		}
-		return -1;
+		if (r != null) 
+			Ram.setAt(Integer.parseInt(adr,2));
 	}
 
 	public static void load(String reg, String adr) {
-		// ...
+		Register r = getRegister(reg);
+		if ( r != null)
+			r.value = Ram.getAt(Integer.parseInt(adr,2));
 	}
 
 	// postavlja vrijednost registra1 na registar2
