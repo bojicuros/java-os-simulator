@@ -43,9 +43,9 @@ public class ProcessScheduler {
 			execute(process, System.currentTimeMillis());
 		} else { // we need to continue process
 			System.out.println("Process " + process.getName() + " is executing again");
-			Shell.loadValues();
 			int startAdress = Shell.manager.loadProcess(process);
 			process.setStartAdress(startAdress);
+			Shell.loadValues();
 			process.setState(ProcessState.RUNNING);
 			execute(process, System.currentTimeMillis());
 		}
@@ -67,6 +67,7 @@ public class ProcessScheduler {
 		} else if (process.getState() == ProcessState.DONE) {
 			System.out.println("Process " + process.getName() + " is done");
 			Operations.printRegisters();
+			// MemoryManager.removeProcess(process);
 		} else { // process is switched by process scheduler
 			Shell.saveValues();
 		}

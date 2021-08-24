@@ -5,6 +5,7 @@ import java.io.File;
 import assembler.Constants;
 import assembler.Operations;
 import kernel.Process;
+import kernel.ProcessScheduler;
 import memory.MemoryManager;
 
 public class Shell {
@@ -15,6 +16,18 @@ public class Shell {
 	public static int PC; // Program counter
 	public static String IR; // Instruction register
 
+	public static void main(String[] args) {
+		manager = new MemoryManager();
+		ProcessScheduler.getReady();
+		// on load
+		new Process("petlja.txt");
+		new Process("suma.txt");
+		new Process("stepen.txt");
+		new Process("faktorijel.txt");
+
+		// on execute
+		ProcessScheduler.start();
+	}
 
 	public static String asemblerToMachineInstruction(String command) {
 		String instruction = "";
@@ -282,13 +295,16 @@ public class Shell {
 		String help = Integer.toBinaryString(temp);
 		if (help == "0")
 			help = "0000";
-		else if(help.length()==8)
+		else if (help.length() == 8)
 			return help;
 		else if (help.length() <= 12) {
 			while (help.length() < 12)
 				help = "0" + help;
 		} else if (help.length() <= 16) {
 			while (help.length() < 16)
+				help = "0" + help;
+		} else if (help.length() <= 20) {
+			while (help.length() < 20)
 				help = "0" + help;
 		} else if (help.length() <= 24) {
 			while (help.length() < 24)
@@ -301,7 +317,7 @@ public class Shell {
 		int[] registers = { Operations.R1.value, Operations.R2.value, Operations.R3.value, Operations.R4.value,
 				Operations.R5.value };
 		currentlyExecuting.setValuesOfRegisters(registers);
-		currentlyExecuting.setPcValue(PC);
+		currentlyExecuting.setPcValue(PC - currentlyExecuting.getStartAdress());
 	}
 
 	public static void loadValues() {
@@ -311,7 +327,7 @@ public class Shell {
 		Operations.R3.value = registers[2];
 		Operations.R4.value = registers[3];
 		Operations.R5.value = registers[4];
-		PC = currentlyExecuting.getPcValue();
+		PC = currentlyExecuting.getPcValue() + currentlyExecuting.getStartAdress();
 	}
 
 }

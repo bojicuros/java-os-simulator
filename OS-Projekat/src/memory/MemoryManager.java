@@ -15,10 +15,11 @@ public class MemoryManager {
 
 	public int loadProcess(Process process) {
 		PartitionMemory partitionMemory = PartitionMemory.getPartitionByProcess(process);
-		if (partitionMemory == null) // provjerava da li je vec korsten taj proces
+		if (!partitionsInRam.contains(partitionMemory)) { // provjerava da li je vec korsten taj proces
 			return loadPartition(new PartitionMemory(process));
-		else
+		} else {
 			return process.getStartAdress();
+		}
 	}
 
 	public int loadPartition(PartitionMemory partiton) {
@@ -57,9 +58,9 @@ public class MemoryManager {
 	public boolean removePartition(PartitionMemory partition) {
 		if (partitionsInRam.contains(partition)) {
 			Ram.removeSequence(partition.getPositionInMemory(), partition.getSize());
-			partitionsInRam.remove(partition);
 			partition.setPositionInMemory(-1);
-
+			partitionsInRam.remove(partition);
+			return true;
 		}
 		return false;
 	}
@@ -105,7 +106,7 @@ public class MemoryManager {
 		}
 		if (Ram.setSequence(bestPosition, data))// postavlja podatke na najbolju poziciju
 			return bestPosition;
-		return bestPosition;
+		return -1;
 	}
 
 	private void makeSpace(int size) {
