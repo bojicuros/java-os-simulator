@@ -72,7 +72,7 @@ public class ShellCommands {
 				st = errorWithParameters();
 			break;
 
-		case "exe": // load
+		case "exe": // execute
 			ShellExe.exe();
 			break;
 

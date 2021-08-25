@@ -5,6 +5,7 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import assembler.Operations;
+import memory.MemoryManager;
 import memory.Ram;
 import shell.Shell;
 
@@ -67,7 +68,7 @@ public class ProcessScheduler {
 		} else if (process.getState() == ProcessState.DONE) {
 			System.out.println("Process " + process.getName() + " is done");
 			Operations.printRegisters();
-			// MemoryManager.removeProcess(process);
+			MemoryManager.removeProcess(process);
 		} else { // process is switched by process scheduler
 			Shell.saveValues();
 		}

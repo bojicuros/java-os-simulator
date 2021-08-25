@@ -2,6 +2,7 @@ package memory;
 
 import java.util.ArrayList;
 import kernel.Process;
+import kernel.ProcessState;
 
 public class MemoryManager {
 
@@ -51,11 +52,11 @@ public class MemoryManager {
 		return data;
 	}
 
-	public boolean removeProcess(Process process) {
+	public static boolean removeProcess(Process process) {
 		return removePartition(PartitionMemory.getPartitionByProcess(process));
 	}
 
-	public boolean removePartition(PartitionMemory partition) {
+	public static boolean removePartition(PartitionMemory partition) {
 		if (partitionsInRam.contains(partition)) {
 			Ram.removeSequence(partition.getPositionInMemory(), partition.getSize());
 			partition.setPositionInMemory(-1);
@@ -110,6 +111,17 @@ public class MemoryManager {
 	}
 
 	private void makeSpace(int size) {
+		// ukoliko postoje blokirani procesi u ramu
+		for (PartitionMemory partition : partitionsInRam) {
+			if (partition.getProcess().getState() == ProcessState.BLOCKED) {
+				removePartition(partition);
+			}
+			if (size < Ram.getFreeSpace())
+				break;
+		}
+		// ukoliko ne postoje ili ovim nismo napravili dovoljno mjesta
+		// uklanjamo procese koji su zadnje dodati (jer od svih u ramu oni ce se zadnji
+		// izvrsavati)
 		PartitionMemory lastAdded = partitionsInRam.get(partitionsInRam.size() - 1);
 		while (size > Ram.getFreeSpace()) {
 			removePartition(lastAdded);
@@ -141,7 +153,6 @@ public class MemoryManager {
 				i = j - 1; // vraca i na kraj nove pozicije i smanjuje za jedan jer ce u for petlji biti
 							// i++
 				avaliablePosition = false;
-
 			}
 		}
 	}
