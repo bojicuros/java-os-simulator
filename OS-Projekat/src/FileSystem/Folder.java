@@ -5,20 +5,24 @@ import java.util.ArrayList;
 
 public class Folder extends File {
 	private ArrayList<File> content;
-
+	
 	public Folder(String name, Folder parent) {
-		super(name, parent, true); // ne koristim null za content
+		super(name, parent, true); 
+		content = new ArrayList<File>();
+		addFolder();
+	}
+	public Folder()
+	{
+		super("", null, true);
 		content = new ArrayList<File>();
 	}
-
-	public Folder addFolder(String name, Folder parent) // static
+	public Folder addFolder() 
 	{
-		if (parent != null) {
-			ArrayList<File> list = parent.getContent();
-			Folder newFolder = new Folder(name, parent);
-			list.add(newFolder);
-			parent.modified = LocalDateTime.now();
-			return newFolder;
+		if (this.getParentFolder() != null) {
+			ArrayList<File> list = parentFolder.getContent();
+			list.add(this);
+			parentFolder.modified = LocalDateTime.now();
+			return this;
 		}
 		System.out.println("Folder must have parent.");// throw exception
 		return null;
@@ -49,7 +53,7 @@ public class Folder extends File {
 
 		return null;
 	}
-
+	
 	public ArrayList<File> getContent() {
 		return content;
 	}

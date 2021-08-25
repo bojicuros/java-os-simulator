@@ -10,6 +10,7 @@ public class File {
 	protected LocalDateTime modified;
 	protected Folder parentFolder;
 	protected byte[] contentFile = null;
+	protected String contentString=null;
 
 	public File(String name, Folder parent, boolean isFolder) {
 		this.name = name;
@@ -29,7 +30,11 @@ public class File {
 		this.contentFile = content;
 		this.size = contentFile.length;
 	}
-
+	public File(String name, Folder parent, String contentString)
+	{
+		this(name, parent, false);
+		this.contentString=contentString;
+	}
 	public String getName() {
 		return name;
 	}

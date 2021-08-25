@@ -2,20 +2,73 @@ package FileSystem;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
+import java.io.FileWriter;
+
 
 public class FileSystem {
 	private Folder root;
 	private Folder current;
-
+	private Folder programFilesFolder;
+    public static ArrayList<java.io.File> programFiles;
 	public FileSystem() {
-		root = new Folder("", null);
+		root = new Folder();
 		current = root;
+		programFilesFolder=new Folder("ProgramFiles", root);
 	}
 
 	public boolean addFolder(String name) {
-		return current.addFolder(name, current) != null;
+		Folder f=new Folder(name, current);
+		return f!=null;
 	}
-
+	public void loadExternFiles(String path){ 
+        programFiles=new ArrayList<>();
+        java.io.File folder=new java.io.File(path);
+        java.io.File[] listOfFiles=folder.listFiles();
+        for (java.io.File file : listOfFiles) 
+        {
+            programFiles.add(file);
+            new File(file.getName(), programFilesFolder,false);
+        }
+    }
+	public boolean createProgramFile(String name, String path, String content) {
+        
+        java.io.File file=new java.io.File(path+"\\"+name);
+        Folder parentFolder=(Folder) getFileByName(programFilesFolder, path.substring(path.lastIndexOf('\\')+1));
+		File f=new File(name, parentFolder, content);
+        try 
+        {
+            FileWriter fw=new FileWriter(file);
+            fw.write(content);
+            fw.close();
+			programFiles.add(file);
+			
+            return true;
+        } 
+        catch (Exception e) 
+        {
+            return false;
+        }    
+    }
+	public boolean createProgramFolder(String path, String name)
+    {
+        java.io.File folder=new java.io.File(path+"\\"+name);
+        if(!folder.exists())
+        {
+            folder.mkdirs();
+            Folder f=new Folder(name, programFilesFolder);
+            return true;
+        }
+        return false;
+    }
+	public java.io.File getProgramFile(String name, String folderPath){ //nakon sto se pozove loadExtern files, vraca datoteku sa proslijedjenim imenom
+		loadExternFiles(folderPath);
+        for (java.io.File file : programFiles) {
+            if(file.getName().compareTo(name)==0)
+                return file;
+        }
+        return null;
+    }
 	public boolean addFile(String name) {
 		return current.addFile(name, current) != null;
 	}
@@ -88,7 +141,16 @@ public class FileSystem {
 		}
 		return false;
 	}
-
+	public File getFileByName(Folder parent, String name)
+	{
+		for (File f : parent.getContent()) {
+			if(name.compareTo(f.getName())==0)
+			{
+				return f;
+			}
+		}
+		return null;
+	}
 	public void printCurrentFolder() {
 		System.out.println("Current folder: " + current.getName());
 	}
