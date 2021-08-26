@@ -1,0 +1,47 @@
+.root{
+    -fx-background-color: #001f27;
+}
+
+.text-area {
+    -fx-background-insets: 0;
+    -fx-background-color:transparent;
+    -fx-font-family: Consolas;
+    -fx-font-size: 22;
+    -fx-display-caret:true;
+    -fx-focus-color: #15ffd3;
+    -fx-text-box-border: #15ffd3;
+    -fx-border-color: #15ffd3;
+    -fx-text-fill: #15ffd3;
+}
+
+.text-field {
+    -fx-background-color: #000000;
+    -fx-text-fill:#ffffff;
+    -fx-font-family: Consolas;
+    -fx-font-size: 22;
+    -fx-border-color: #000000;
+}
+
+.text-area .content{
+    -fx-background-color: #012638;
+    -fx-text-box-border: #15ffd3;
+}
+
+.button {
+    -fx-background-color: #001f27;
+    -fx-text-fill: #15ffd3;
+    -fx-border-color: #15ffd3;
+
+}
+
+.button:hover{
+        -fx-background-color:
+                linear-gradient(#06433d, #06433d),
+                linear-gradient(#06433d, #06433d),
+                linear-gradient(#06433d, #06433d),
+                linear-gradient(#06433d 0%, #06433d 50%, #06433d 100%),
+                linear-gradient(from 0% 0% to 15% 50%, rgba(255,255,255,0.9), rgba(255,255,255,0));
+            -fx-background-insets: 0,1,2,3,0;
+            -fx-text-fill: #41ccff;
+            -fx-font-size: 12px;
+}
