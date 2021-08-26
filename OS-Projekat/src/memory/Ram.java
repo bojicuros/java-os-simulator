@@ -1,13 +1,13 @@
 package memory;
 
 public class Ram {
-	
+
 	private static final int CAPACITY = 1024;
 	private static int[] ram = new int[CAPACITY];
 	private static int occupied = 0;
-	
+
 	public static void printRAM() {
-		for(int i=0;i<CAPACITY;i++) {
+		for (int i = 0; i < CAPACITY; i++) {
 			System.out.println(ram[i]);
 		}
 	}
@@ -31,7 +31,7 @@ public class Ram {
 	}
 
 	public static boolean removeSequence(int start, int size) {
-		if (size + start >= CAPACITY)
+		if (size + start > CAPACITY)
 			return false;
 		for (int i = start; i < size + start; i++) {
 			if (isOcupied(i)) {
@@ -45,13 +45,12 @@ public class Ram {
 	}
 
 	public static boolean setSequence(int start, int[] data) {
-		if (start + data.length >= CAPACITY)
+		if (start + data.length > CAPACITY)
 			return false;
 		for (int i = start; i < data.length + start; i++) {
 			if (!isOcupied(i)) {
 				setAt(i, data[i - start]);
-			}
-			 else
+			} else
 				return false;
 		}
 		return true;

@@ -1,11 +1,34 @@
 package FileSystem;
 
+import java.io.FileNotFoundException; 
+import java.util.Scanner;
 public class Main 
 {
 
     public static void main(String[] args) 
 	{
-		FileSystem fs = new FileSystem();
+		    FileSystem fs = new FileSystem();
+        fs.loadExternFiles("D:\\somePath\\ProgramFiles");//mora imati ProgramFiles ili njegov podfolder na kraju
+        fs.printContent();
+        fs.changeFolder("ProgramFiles");
+        fs.printContent();
+    /*
+        fs.createProgramFolder("D:\\path\\Folder", "NewFolder");//dodati putanju
+        fs.createProgramFile("file.txt", "D:\\path\\NewFolder", "Text u fajlu\nNovi red");//dodati svoju putanju (\\)
+        java.io.File f=fs.getProgramFile("file.txt", "D:\\path\\NewFolder");//dodati path
+        try {
+            Scanner myReader = new Scanner(f);
+            while (myReader.hasNextLine()) {
+              String data = myReader.nextLine();
+              System.out.println(data);
+            }
+            myReader.close();
+          } catch (FileNotFoundException e) {
+            System.out.println("An error occurred.");
+            e.printStackTrace();
+          }
+          */
+        /*
 		fs.addFolder("f1");
 		fs.addFolder("f2");
         fs.addFile("file1");
@@ -30,5 +53,6 @@ public class Main
         fs.changeFolder("..");
         fs.renameFolder("f1", "abc");
         fs.printContent();
+        */
     }
 }

@@ -1,19 +1,26 @@
 package shell;
 
 import java.io.*;
-
 import javafx.application.Application;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
+import javafx.scene.control.Button;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 
 public class GUI extends Application {
 	private static String textToShow;
 	private static TextArea top = new TextArea();
 	private static TextField bottom = new TextField();
+	private static Button close;
+	private static Button minimize;
 	private PipedInputStream inp = new PipedInputStream();
 	private PipedOutputStream out = new PipedOutputStream();
 	private int len = 0;
@@ -22,46 +29,48 @@ public class GUI extends Application {
 		launch(args);
 	}
 
-	public static void setSBClear() {
-		textToShow = "";
-		bottom.clear();
+	public static void addTextToShow(String par) {
+		top.appendText(par);
 	}
 
-	public static void setHelp() {
-		String help;
-
-		help = "DIR \t\t\t Displays a list of files and subdirectories in a directory.\n";
-		help += "GOTO \t\t Changes dir.\n";
-		help += "MD \t\t\t Make dir.\n";
-		help += "DD \t\t\t Delete dir.\n";
-		help += "RD \t\t\t Rename dir.\n";
-		help += "LOAD \t\t Load and send procces in the background. \n";
-		help += "EXE \t\t\t Start executing processes. \n";
-		help += "LSPR \t\t List of processes.\n";
-		help += "TRMPR \t\t Terminate process.\n";
-		help += "BLPR \t\t Blocks process.\n";
-		help += "UBLPR \t\t Unblocks process.\n";
-		help += "CLEAR \t\t Clears terminal.\n";
-		help += "EXIT \t\t\t Closes program.\n";
-
-		textToShow += help;
+	public static void clearTerminal() {
+		top.setText("");
+		bottom.clear();
 	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
 
-		VBox root = new VBox();
-		top = new TextArea();
-		bottom = new TextField();
 		inp.connect(out);
 		textToShow = "";
 
-		root.getChildren().setAll(top, bottom);
+		close = new Button("X");
+		close.setPrefSize(5,5);
+		minimize = new Button("_");
+		minimize.setPrefSize(5,5);
 
-		top.setMinSize(1000, 550);
+		HBox buttons = new HBox(5);
+		buttons.setAlignment(Pos.TOP_RIGHT);
+	//	buttons.setPadding(new Insets(0, 0, 10, 0));
+		buttons.getChildren().addAll(minimize, close);
+
+		top = new TextArea();
+		top.setMinSize(900, 450);
 		top.setEditable(false);
+		top.setText("Welcome to OS simulator!\n");
 
-		bottom.setMinSize(1000, 50);
+		bottom = new TextField();
+		bottom.setMinSize(900, 62);
+
+		close.setOnAction(e -> {
+			System.exit(0);
+		});
+
+		minimize.setOnAction(e -> {
+			Stage stage = (Stage) minimize.getScene().getWindow();
+			stage.setIconified(true);
+		});
+
 		bottom.setOnAction(e -> {
 			try {
 				byte array[] = bottom.getText().getBytes();
@@ -71,11 +80,13 @@ public class GUI extends Application {
 				ShellCommands.readACommand(inp, len);
 
 				textToShow += ">" + bottom.getText() + "\n";
-				String st = ShellCommands.returnCommand();
-				textToShow += st;
+				top.appendText(textToShow);
 
-				top.setText(textToShow);
+				String commandText = ShellCommands.returnCommand();
+				top.appendText(commandText);
+
 				bottom.clear();
+				textToShow = "";
 
 			} catch (IOException e1) {
 				e1.printStackTrace();
@@ -87,19 +98,33 @@ public class GUI extends Application {
 				String last = ShellCommands.previous();
 				if (!last.equals("")) {
 					bottom.setText(last);
+					bottom.positionCaret(last.length());
 				}
+				e.consume();
 			} else if (e.getCode().equals(KeyCode.DOWN)) {
 				String next = ShellCommands.next();
 				if (!next.equals("")) {
 					bottom.setText(next);
+					bottom.positionCaret(next.length());
 				}
+				e.consume();
 			}
 		});
 
-		Scene scene = new Scene(root, 800, 600);
+		VBox root = new VBox(15);
+		root.setPadding(new Insets(10, 30, 30, 30));
+		root.getChildren().setAll(buttons, top, bottom);
+		VBox.setVgrow(top, Priority.ALWAYS);
+		Scene scene = new Scene(root, 1200, 700);
+		scene.getStylesheets().add("application.css");
+
 		primaryStage.setScene(scene);
+		primaryStage.initStyle(StageStyle.TRANSPARENT);
 		primaryStage.setTitle("Console");
+		primaryStage.setResizable(false);
 		primaryStage.show();
+
+		bottom.requestFocus();
 
 	}
 }
