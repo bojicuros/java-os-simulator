@@ -10,16 +10,16 @@ public class File {
 	protected LocalDateTime modified;
 	protected Folder parentFolder;
 	protected byte[] contentFile = null;
-	protected String contentString=null;
+	protected String contentString = null;
 
-	public File()
-	{
+	public File() {
 		this.name = "";
 		path = "//";
 		created = LocalDateTime.now();
 		modified = LocalDateTime.now();
 		parentFolder = null;
 	}
+
 	public File(String name, Folder parent, boolean isFolder) {
 		this.name = name;
 		if (parent == null) {
@@ -31,7 +31,7 @@ public class File {
 		modified = LocalDateTime.now();
 		parentFolder = parent;
 		parent.addFile(this);
-		
+
 	}
 
 	public File(String name, Folder parent, boolean isFolder, byte[] content)// Object[] content
@@ -40,11 +40,12 @@ public class File {
 		this.contentFile = content;
 		this.size = contentFile.length;
 	}
-	public File(String name, Folder parent, String contentString)
-	{
+
+	public File(String name, Folder parent, String contentString) {
 		this(name, parent, false);
-		this.contentString=contentString;
+		this.contentString = contentString;
 	}
+
 	public String getName() {
 		return name;
 	}
@@ -82,7 +83,6 @@ public class File {
 		this.size = size;
 	}
 
-
 	public boolean save() {
 //		SecondaryMemory.saveFile(this);
 		return false;
@@ -90,7 +90,7 @@ public class File {
 
 	public void delete() {
 //		SecondaryMemory.deleteFile(this);
-		
+
 	}
 
 	public void printFileBlocks() {

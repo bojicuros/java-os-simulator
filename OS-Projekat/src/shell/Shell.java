@@ -107,27 +107,6 @@ public class Shell {
 			instruction += toBinary(arr[2]); // +vrijendost
 			instruction += toBinary(arr[3]); // +adresa
 			return instruction;
-<<<<<<< HEAD
-		} else if(arr[0].equals("INC") || arr[0].equals("DEC")){
-			switch (arr[1]) { // +registar
-				case "R1":
-					instruction += Constants.R1;
-					break;
-				case "R2":
-					instruction += Constants.R2;
-					break;
-				case "R3":
-					instruction += Constants.R3;
-					break;
-				case "R4":
-					instruction += Constants.R4;
-					break;
-				case "R5":
-					instruction += Constants.R5;
-					break;
-				}
-				return instruction;
-=======
 		} else if (arr[0].equals("INC") || arr[0].equals("DEC")) {
 			switch (arr[1]) { // +registar
 			case "R1":
@@ -147,7 +126,6 @@ public class Shell {
 				break;
 			}
 			return instruction;
->>>>>>> efa2dc5393381f01d2a2564b4f15fa63ab1270ee
 		} else if (arr[2].equals("R1") || arr[2].equals("R2") || arr[2].equals("R3") || arr[2].equals("R4")
 				|| arr[2].equals("R5")) { // ako su oba argumenta registri (MOV,ADD,SUB,MUL)
 			switch (arr[1]) {
@@ -312,7 +290,8 @@ public class Shell {
 		if (!programCounterChanged)
 			PC++;
 	}
-
+	
+	//pretvara vrijednost iz ram memorije (int) u masinsku instrukciju
 	public static String fromIntToInstruction(int temp) {
 		String help = Integer.toBinaryString(temp);
 		if (help == "0")
@@ -335,13 +314,15 @@ public class Shell {
 		return help;
 	}
 
-	public static void saveValues() {
+	//cuva vrijednost programskog brojaca i registara procesa koji je prekinut od strane rasporedjivaca
+	public static void saveValues() {	
 		int[] registers = { Operations.R1.value, Operations.R2.value, Operations.R3.value, Operations.R4.value,
 				Operations.R5.value };
 		currentlyExecuting.setValuesOfRegisters(registers);
 		currentlyExecuting.setPcValue(PC - currentlyExecuting.getStartAdress());
 	}
 
+	//ucitava zapamcene vrijednosti kako bi proces nastavio izvrsavanje kao da prekida nije ni bilo
 	public static void loadValues() {
 		int[] registers = currentlyExecuting.getValuesOfRegisters();
 		Operations.R1.value = registers[0];
