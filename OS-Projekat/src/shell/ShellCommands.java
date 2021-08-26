@@ -22,18 +22,18 @@ public class ShellCommands {
 
 		switch (commands[0]) {
 
-		case "dir": // a show directory
+		case "ls": // a show directory
 			if (commands.length == 1) {
 				st = "Show directory\n";
-				ShellExe.showDir();
+				ShellExe.ls();
 			} else
 				st = errorWithParameters();
 			break;
 
-		case "goto": // change directory
+		case "cd": // change directory
 			if (commands.length == 2) {
 				String parameter = commands[1];
-				ShellExe.go(parameter);
+				ShellExe.cd(parameter);
 			} else
 				st = errorWithParameters();
 			break;
@@ -72,14 +72,13 @@ public class ShellCommands {
 				st = errorWithParameters();
 			break;
 
-		case "exe": // execute
+		case "exe": // load
 			ShellExe.exe();
 			break;
 
 		case "lspr": // list of processes
 			if (commands.length == 1) {
-				ShellExe.lspr();
-				st = "Lista procesa";
+				st=ShellExe.lspr();
 			} else
 				st = errorWithParameters();
 			break;
@@ -111,8 +110,10 @@ public class ShellCommands {
 			break;
 
 		case "clear": // clear terminal
-			ShellExe.clear();
-			System.out.println("clear");
+			if (commands.length == 1) {
+				ShellExe.clear();
+			} else
+				st = errorWithParameters();
 			break;
 
 		case "exit": // exit
@@ -124,7 +125,8 @@ public class ShellCommands {
 
 		case "help": // help
 			if (commands.length == 1) {
-				ShellExe.help();
+				st = ShellExe.help();
+				
 			} else
 				st = errorWithParameters();
 			break;
