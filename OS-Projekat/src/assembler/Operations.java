@@ -110,42 +110,82 @@ public class Operations {
 		Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
 	}
 
+	//jump if lesser
 	public static boolean jmpl(String reg, String val, String adr) {
-		Register r = getRegister(reg);
-		if (r != null && r.value < Integer.parseInt(val, 2)) {
-			int temp = Integer.parseInt(adr, 2);
-			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
-			return true;
+		Register r1 = getRegister(reg);
+		if(val.length() == 8){	//drugi argument je vrijednost
+			if(r1 != null && r1.value < Integer.parseInt(val,2)){
+				int temp = Integer.parseInt(adr, 2);
+				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				return true;
+			}
+		} else if(val.length() == 4){	//i drugi je registar
+			Register r2 = getRegister(val);
+			if (r1 != null && r2 != null && r1.value < r2.value) {
+				int temp = Integer.parseInt(adr, 2);
+				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				return true;
+			}
 		}
 		return false;
 	}
 
+	//jump if greater
 	public static boolean jmpg(String reg, String val, String adr) {
-		Register r = getRegister(reg);
-		if (r != null && r.value > Integer.parseInt(val, 2)) {
-			int temp = Integer.parseInt(adr, 2);
-			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
-			return true;
+		Register r1 = getRegister(reg);
+		if(val.length() == 8){	//drugi argument je vrijednost
+			if(r1 != null && r1.value > Integer.parseInt(val,2)){
+				int temp = Integer.parseInt(adr, 2);
+				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				return true;
+			}
+		} else if(val.length() == 4){	//i drugi je registar
+			Register r2 = getRegister(val);
+			if (r1 != null && r2 != null && r1.value > r2.value) {
+				int temp = Integer.parseInt(adr, 2);
+				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				return true;
+			}
 		}
 		return false;
 	}
 
+	//jump if equal
 	public static boolean jmpe(String reg, String val, String adr) {
-		Register r = getRegister(reg);
-		if (r != null && r.value == Integer.parseInt(val, 2)) {
-			int temp = Integer.parseInt(adr, 2);
-			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
-			return true;
+		Register r1 = getRegister(reg);
+		if(val.length() == 8){	//drugi argument je vrijednost
+			if(r1 != null && r1.value == Integer.parseInt(val,2)){
+				int temp = Integer.parseInt(adr, 2);
+				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				return true;
+			}
+		} else if(val.length() == 4){	//i drugi je registar
+			Register r2 = getRegister(val);
+			if (r1 != null && r2 != null && r1.value == r2.value) {
+				int temp = Integer.parseInt(adr, 2);
+				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				return true;
+			}
 		}
 		return false;
 	}
 
+	//jump if different
 	public static boolean jmpd(String reg, String val, String adr) {
-		Register r = getRegister(reg);
-		if (r != null && r.value != Integer.parseInt(val, 2)) {
-			int temp = Integer.parseInt(adr, 2);
-			Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
-			return true;
+		Register r1 = getRegister(reg);
+		if(val.length() == 8){	//drugi argument je vrijednost
+			if(r1 != null && r1.value != Integer.parseInt(val,2)){
+				int temp = Integer.parseInt(adr, 2);
+				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				return true;
+			}
+		} else if(val.length() == 4){	//i drugi je registar
+			Register r2 = getRegister(val);
+			if (r1 != null && r2 != null && r1.value != r2.value) {
+				int temp = Integer.parseInt(adr, 2);
+				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				return true;
+			}
 		}
 		return false;
 	}

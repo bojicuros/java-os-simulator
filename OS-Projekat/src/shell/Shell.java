@@ -103,6 +103,25 @@ public class Shell {
 			instruction += toBinary(arr[2]); // +vrijendost
 			instruction += toBinary(arr[3]); // +adresa
 			return instruction;
+		} else if(arr[0].equals("INC") || arr[0].equals("DEC")){
+			switch (arr[1]) { // +registar
+				case "R1":
+					instruction += Constants.R1;
+					break;
+				case "R2":
+					instruction += Constants.R2;
+					break;
+				case "R3":
+					instruction += Constants.R3;
+					break;
+				case "R4":
+					instruction += Constants.R4;
+					break;
+				case "R5":
+					instruction += Constants.R5;
+					break;
+				}
+				return instruction;
 		} else if (arr[2].equals("R1") || arr[2].equals("R2") || arr[2].equals("R3") || arr[2].equals("R4")
 				|| arr[2].equals("R5")) { // ako su oba argumenta registri (MOV,ADD,SUB,MUL)
 			switch (arr[1]) {
