@@ -12,6 +12,14 @@ public class File {
 	protected byte[] contentFile = null;
 	protected String contentString=null;
 
+	public File()
+	{
+		this.name = "";
+		path = "//";
+		created = LocalDateTime.now();
+		modified = LocalDateTime.now();
+		parentFolder = null;
+	}
 	public File(String name, Folder parent, boolean isFolder) {
 		this.name = name;
 		if (parent == null) {
@@ -22,6 +30,8 @@ public class File {
 		created = LocalDateTime.now();
 		modified = LocalDateTime.now();
 		parentFolder = parent;
+		parent.addFile(this);
+		
 	}
 
 	public File(String name, Folder parent, boolean isFolder, byte[] content)// Object[] content

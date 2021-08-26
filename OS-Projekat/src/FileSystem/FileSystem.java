@@ -10,11 +10,11 @@ public class FileSystem {
 	private Folder root;
 	private Folder current;
 	private Folder programFilesFolder;
-    public static ArrayList<java.io.File> programFiles;
+    public ArrayList<java.io.File> programFiles;
 	public FileSystem() {
 		root = new Folder();
 		current = root;
-		programFilesFolder=new Folder("ProgramFiles", root);
+		programFilesFolder=new Folder("ProgramFiles", root); //dodaje u root ProgramFiles folder
 	}
 
 	public boolean addFolder(String name) {
@@ -27,15 +27,61 @@ public class FileSystem {
         java.io.File[] listOfFiles=folder.listFiles();
         for (java.io.File file : listOfFiles) 
         {
+			String nameOfFOlder=path.substring(path.lastIndexOf('\\')+1);
             programFiles.add(file);
-            new File(file.getName(), programFilesFolder,false);
+            if(file.isDirectory())
+			{
+				if(nameOfFOlder.compareTo("ProgramFiles")==0)
+				{
+					Folder f=new Folder(file.getName(), programFilesFolder);
+				}
+				else{
+					File subfolder=getFileByName(programFilesFolder, file.getName());//trazi folder u program files
+					if(subfolder==null)		//ako ga ne nadje, kreira ga u ProgramFiles
+					{
+						Folder missingFolder=new Folder(nameOfFOlder, programFilesFolder);
+						Folder f=new Folder(file.getName(), missingFolder);
+					}
+					else //ako ga nadje u njemu kreira
+					{
+						Folder f=new Folder(file.getName(), (Folder)subfolder);
+					}
+						
+				}	
+			}
+			else
+			{
+				if(nameOfFOlder.compareTo("ProgramFiles")==0)
+				{
+					new File(file.getName(), programFilesFolder, false);
+				}
+				else{
+					File subfolder=getFileByName(programFilesFolder, file.getName());
+					if(subfolder==null)		
+					{
+						Folder missingFolder=new Folder(nameOfFOlder, programFilesFolder);
+						Folder f=new Folder(file.getName(), missingFolder);
+					}
+					else
+					{
+						new File(file.getName(), (Folder)subfolder, false);
+					}				
+				}
+			}
         }
     }
 	public boolean createProgramFile(String name, String path, String content) {
         
         java.io.File file=new java.io.File(path+"\\"+name);
-        Folder parentFolder=(Folder) getFileByName(programFilesFolder, path.substring(path.lastIndexOf('\\')+1));
-		File f=new File(name, parentFolder, content);
+		if(path.substring(path.lastIndexOf('\\')+1).compareTo("ProgramFiles")==0)
+		{
+			new File(name, programFilesFolder, content);
+		}
+		else
+        {
+			Folder parentFolder=(Folder) getFileByName(programFilesFolder, path.substring(path.lastIndexOf('\\')+1));
+			new File(name,parentFolder,content);
+		}
         try 
         {
             FileWriter fw=new FileWriter(file);
@@ -62,7 +108,7 @@ public class FileSystem {
         return false;
     }
 	public java.io.File getProgramFile(String name, String folderPath){ //nakon sto se pozove loadExtern files, vraca datoteku sa proslijedjenim imenom
-		loadExternFiles(folderPath);
+		loadExternFiles(folderPath);	
         for (java.io.File file : programFiles) {
             if(file.getName().compareTo(name)==0)
                 return file;
@@ -70,21 +116,21 @@ public class FileSystem {
         return null;
     }
 	public boolean addFile(String name) {
-		return current.addFile(name, current) != null;
+		return new File(name, current, false)!=null;
 	}
 
 	public boolean addFile(String name, byte[] content) {
-		return current.addFile(name, current, content) != null;
+		return new File(name, current, false, content)!=null;
 	}
 
 	public boolean changeFolder(String command) {
-		if (command.compareTo("..") == 0 && !current.equals(root)) {
+		if (command.compareTo("..") == 0 && !current.equals(root)) {	//vraca korak unazad
 			if (current.equals(root))
 				return true;
 			current = current.parentFolder;
 			return true;
 		} else {
-			if (command.charAt(0) == '/') {
+			if (command.charAt(0) == '/') {	//trazi prema apsolutnoj putnji 
 				current = root;
 				if (command.compareTo("/") == 0) {
 					return true;
