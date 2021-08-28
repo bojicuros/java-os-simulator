@@ -1,22 +1,21 @@
 package shell;
 
 import java.io.IOException;
+import java.io.OutputStream;
 import java.io.PipedInputStream;
+import java.io.PrintStream;
 import java.util.ArrayList;
 
-public class ShellCommands {
+public class ShellCommands{
 
-	private static String st;
 	private static String command;
 	private static ArrayList<String> commandList = new ArrayList<String>();
 	private static int iter;
 
-	public static String returnCommand() {
-		st = "";
+	public static void returnCommand() {
 		commandList.add(command);
 		iter = commandList.size();
 		command = command.toLowerCase();
-
 		String commands[];
 		commands = command.split(" ");
 
@@ -24,10 +23,9 @@ public class ShellCommands {
 
 		case "ls": // a show directory
 			if (commands.length == 1) {
-				st = "Show directory\n";
 				ShellExe.ls();
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "cd": // change directory
@@ -35,7 +33,7 @@ public class ShellCommands {
 				String parameter = commands[1];
 				ShellExe.cd(parameter);
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "md": // make directory
@@ -43,7 +41,7 @@ public class ShellCommands {
 				String parameter = commands[1];
 				ShellExe.md(parameter);
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "dd": // delete dir
@@ -51,7 +49,7 @@ public class ShellCommands {
 				String parameter = commands[1];
 				ShellExe.dd(parameter);
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "rd": // rename dir
@@ -60,7 +58,7 @@ public class ShellCommands {
 				String parameter2 = commands[2];
 				ShellExe.rd(parameter1, parameter2);
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "load": // load
@@ -69,7 +67,7 @@ public class ShellCommands {
 				String parameter2 = commands[2];
 				ShellExe.load(parameter1, parameter2);
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "exe": // load
@@ -78,9 +76,9 @@ public class ShellCommands {
 
 		case "lspr": // list of processes
 			if (commands.length == 1) {
-				st=ShellExe.lspr();
+				ShellExe.lspr();
 			} else
-				st = errorWithParameters();
+				 errorWithParameters();
 			break;
 
 		case "trmpr": // terminate process
@@ -88,53 +86,52 @@ public class ShellCommands {
 				String parameter = commands[1];
 				ShellExe.trmpr(parameter);
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "blpr": // block process
 			if (commands.length == 2) {
 				String parameter = commands[1];
-				st = "blokiraj proces";
+				
 				ShellExe.blpr(parameter);
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "ublpr": // ublock process
 			if (commands.length == 2) {
 				String parameter = commands[1];
-				st = "unblokiraj proces";
 				ShellExe.ublpr(parameter);
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "clear": // clear terminal
 			if (commands.length == 1) {
 				ShellExe.clear();
 			} else
-				st = errorWithParameters();
+			 errorWithParameters();
 			break;
 
 		case "exit": // exit
 			if (commands.length == 1) {
 				ShellExe.exit();
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "help": // help
 			if (commands.length == 1) {
-				st = ShellExe.help();
+				ShellExe.help();
 				
 			} else
-				st = errorWithParameters();
+				errorWithParameters();
 			break;
 
 		default:
-			st = "That command dont exist. Try again\n";
+			System.out.println("That command doesn't exist!");
 		}
-		return st;
+		
 	}
 
 	public static String previous() {
@@ -176,9 +173,13 @@ public class ShellCommands {
 			}
 		}
 	}
+	
+	public static void setOut(OutputStream out) {
+		System.setOut(new PrintStream(out, true));
+	}
 
-	private static String errorWithParameters() {
+	private static void errorWithParameters() {
 		String s = "Parameters for command are incorrect!\n";
-		return s;
+		System.out.println(s);
 	}
 }

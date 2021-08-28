@@ -5,11 +5,11 @@ import kernel.ProcessScheduler;
 public class ShellExe {
 
 	public static void ls() {
-
+		System.out.println("RADII");
 	}
 
 	public static void cd(String par) {
-
+		
 	}
 
 	public static void md(String par) {
@@ -32,34 +32,35 @@ public class ShellExe {
 
 	}
 
-	public static String lspr() {
+	public static void lspr() {
 		String answer = ProcessScheduler.processList();
-		return answer;
+		System.out.println(answer);
 	}
 
-	public static String trmpr(String par) {
+	public static void trmpr(String par) {
 		ProcessScheduler.terminateProcess(par);
 		String answer = par + " has been terminated";
-		return answer;
+		System.out.println(answer);
+		
 	}
 
-	public static String blpr(String par) {
+	public static void blpr(String par) {
 		ProcessScheduler.blockProcess(par);
 		String answer = par + " has been blocked";
-		return answer;
+		System.out.println(answer);
 	}
 
-	public static String ublpr(String par) {
+	public static void ublpr(String par) {
 		ProcessScheduler.unblockProcess(par);
 		String answer = par + " has been blocked";
-		return answer;
+		System.out.println(answer);
 	}
 
 	public static void clear() {
 		GUI.clearTerminal();
 	}
 
-	public static String help() {
+	public static void help() {
 		String help;
 
 		help = "LS \t\t Displays a list of files and subdirectories in a directory.\n";
@@ -74,9 +75,9 @@ public class ShellExe {
 		help += "BLPR \t\t Blocks process.\n";
 		help += "UBLPR \t\t Unblocks process.\n";
 		help += "CLEAR \t\t Clears terminal.\n";
-		help += "EXIT \t\t Closes program.\n";
+		help += "EXIT \t\t Closes program.";
 
-		return help;
+		System.out.println(help);
 	}
 
 	public static void exit() {

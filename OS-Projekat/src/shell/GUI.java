@@ -23,24 +23,29 @@ public class GUI extends Application {
 	private static Button minimize;
 	private PipedInputStream inp = new PipedInputStream();
 	private PipedOutputStream out = new PipedOutputStream();
+	private StringBuilder outStringBuilder=new StringBuilder();
+	private OutputStream outStream;
 	private int len = 0;
-
+	
 	public static void main(String[] args) throws IOException {
 		launch(args);
-	}
-
-	public static void addTextToShow(String par) {
-		top.appendText(par);
 	}
 
 	public static void clearTerminal() {
 		top.setText("");
 		bottom.clear();
 	}
+	
+	private void addTextToTop () {
+		if (outStringBuilder.length() > 0) {
+			top.appendText(outStringBuilder.toString());
+			outStringBuilder = new StringBuilder();
+		}
+	}
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-
+		
 		inp.connect(out);
 		textToShow = "";
 
@@ -51,7 +56,7 @@ public class GUI extends Application {
 
 		HBox buttons = new HBox(5);
 		buttons.setAlignment(Pos.TOP_RIGHT);
-	//	buttons.setPadding(new Insets(0, 0, 10, 0));
+	
 		buttons.getChildren().addAll(minimize, close);
 
 		top = new TextArea();
@@ -81,13 +86,11 @@ public class GUI extends Application {
 
 				textToShow += ">" + bottom.getText() + "\n";
 				top.appendText(textToShow);
-
-				String commandText = ShellCommands.returnCommand();
-				top.appendText(commandText);
-
+				ShellCommands.returnCommand();
+		
 				bottom.clear();
 				textToShow = "";
-
+				
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -110,6 +113,17 @@ public class GUI extends Application {
 				e.consume();
 			}
 		});
+		
+		outStream = new OutputStream() {
+			public void write(int b) throws IOException {
+					outStringBuilder.append((char) b);
+					if (((char) b) == '\n')
+						addTextToTop();
+			}
+		};
+		
+		ShellCommands.setOut(outStream);
+				
 
 		VBox root = new VBox(15);
 		root.setPadding(new Insets(10, 30, 30, 30));
@@ -123,7 +137,7 @@ public class GUI extends Application {
 		primaryStage.setTitle("Console");
 		primaryStage.setResizable(false);
 		primaryStage.show();
-
+		
 		bottom.requestFocus();
 
 	}

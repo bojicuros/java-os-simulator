@@ -8,7 +8,7 @@ import kernel.Process;
 import kernel.ProcessScheduler;
 import memory.MemoryManager;
 
-public class Shell {
+public class Shell  {
 
 	public static File workingDirectory;
 	public static MemoryManager manager;
@@ -290,8 +290,7 @@ public class Shell {
 		if (!programCounterChanged)
 			PC++;
 	}
-	
-	//pretvara vrijednost iz ram memorije (int) u masinsku instrukciju
+
 	public static String fromIntToInstruction(int temp) {
 		String help = Integer.toBinaryString(temp);
 		if (help == "0")
@@ -314,15 +313,13 @@ public class Shell {
 		return help;
 	}
 
-	//cuva vrijednost programskog brojaca i registara procesa koji je prekinut od strane rasporedjivaca
-	public static void saveValues() {	
+	public static void saveValues() {
 		int[] registers = { Operations.R1.value, Operations.R2.value, Operations.R3.value, Operations.R4.value,
 				Operations.R5.value };
 		currentlyExecuting.setValuesOfRegisters(registers);
 		currentlyExecuting.setPcValue(PC - currentlyExecuting.getStartAdress());
 	}
 
-	//ucitava zapamcene vrijednosti kako bi proces nastavio izvrsavanje kao da prekida nije ni bilo
 	public static void loadValues() {
 		int[] registers = currentlyExecuting.getValuesOfRegisters();
 		Operations.R1.value = registers[0];
