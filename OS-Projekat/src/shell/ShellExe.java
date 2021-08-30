@@ -1,7 +1,7 @@
 package shell;
 
-import kernel.ProcessScheduler;
 import kernel.Process;
+import kernel.ProcessScheduler;
 
 public class ShellExe {
 
@@ -33,23 +33,20 @@ public class ShellExe {
 		ProcessScheduler.start();
 	}
 
-	public static void lspr() {
-		System.out.println("All processes:");
-		for (Process process : ProcessScheduler.allProcesses) {
-			System.out.println("  " + process);
-		}
+	public static void pr() {
+		ProcessScheduler.listOfProcesses();
 	}
 
-	public static void trmpr(String par) {
-
+	public static void trm(String par) {
+		ProcessScheduler.terminateProcess(par);
 	}
 
-	public static void blpr(String par) {
-
+	public static void block(String par) {
+		ProcessScheduler.blockProcess(par);
 	}
 
-	public static void ublpr(String par) {
-
+	public static void unblock(String par) {
+		ProcessScheduler.unblockProcess(par);
 	}
 
 	public static void clear() {
@@ -66,10 +63,10 @@ public class ShellExe {
 		help += "RD \t\t Rename dir.\n";
 		help += "LOAD \t\t Load and send procces in the background. \n";
 		help += "EXE \t\t Start executing processes. \n";
-		help += "LSPR \t\t List of processes.\n";
-		help += "TRMPR \t\t Terminate process.\n";
-		help += "BLPR \t\t Blocks process.\n";
-		help += "UBLPR \t\t Unblocks process.\n";
+		help += "PR \t\t List of processes.\n";
+		help += "TRM \t\t Terminate process.\n";
+		help += "BLOCK \t\t Blocks process.\n";
+		help += "UBLOCK \t\t Unblocks process.\n";
 		help += "CLEAR \t\t Clears terminal.\n";
 		help += "EXIT \t\t Closes program.";
 

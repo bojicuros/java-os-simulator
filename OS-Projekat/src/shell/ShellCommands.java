@@ -6,7 +6,7 @@ import java.io.PipedInputStream;
 import java.io.PrintStream;
 import java.util.ArrayList;
 
-public class ShellCommands{
+public class ShellCommands {
 
 	private static String command;
 	private static ArrayList<String> commandList = new ArrayList<String>();
@@ -73,34 +73,33 @@ public class ShellCommands{
 			ShellExe.exe();
 			break;
 
-		case "lspr": // list of processes
+		case "pr": // list of processes
 			if (commands.length == 1) {
-				ShellExe.lspr();
-			} else
-				 errorWithParameters();
-			break;
-
-		case "trmpr": // terminate process
-			if (commands.length == 2) {
-				String parameter = commands[1];
-				ShellExe.trmpr(parameter);
+				ShellExe.pr();
 			} else
 				errorWithParameters();
 			break;
 
-		case "blpr": // block process
+		case "trm": // terminate process
 			if (commands.length == 2) {
 				String parameter = commands[1];
-				
-				ShellExe.blpr(parameter);
+				ShellExe.trm(parameter);
 			} else
 				errorWithParameters();
 			break;
 
-		case "ublpr": // ublock process
+		case "block": // block process
 			if (commands.length == 2) {
 				String parameter = commands[1];
-				ShellExe.ublpr(parameter);
+				ShellExe.block(parameter);
+			} else
+				errorWithParameters();
+			break;
+
+		case "unblock": // ublock process
+			if (commands.length == 2) {
+				String parameter = commands[1];
+				ShellExe.unblock(parameter);
 			} else
 				errorWithParameters();
 			break;
@@ -109,7 +108,7 @@ public class ShellCommands{
 			if (commands.length == 1) {
 				ShellExe.clear();
 			} else
-			 errorWithParameters();
+				errorWithParameters();
 			break;
 
 		case "exit": // exit
@@ -122,7 +121,6 @@ public class ShellCommands{
 		case "help": // help
 			if (commands.length == 1) {
 				ShellExe.help();
-				
 			} else
 				errorWithParameters();
 			break;
@@ -130,7 +128,7 @@ public class ShellCommands{
 		default:
 			System.out.println("That command doesn't exist!");
 		}
-		
+
 	}
 
 	public static String previous() {
@@ -172,7 +170,7 @@ public class ShellCommands{
 			}
 		}
 	}
-	
+
 	public static void setOut(OutputStream out) {
 		System.setOut(new PrintStream(out, true));
 	}

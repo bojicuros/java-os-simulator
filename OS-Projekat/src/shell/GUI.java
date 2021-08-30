@@ -23,10 +23,10 @@ public class GUI extends Application {
 	private static Button minimize;
 	private PipedInputStream inp = new PipedInputStream();
 	private PipedOutputStream out = new PipedOutputStream();
-	private StringBuilder outStringBuilder=new StringBuilder();
+	private StringBuilder outStringBuilder = new StringBuilder();
 	private OutputStream outStream;
 	private int len = 0;
-	
+
 	public static void main(String[] args) throws IOException {
 		Shell.boot();
 		launch(args);
@@ -36,8 +36,8 @@ public class GUI extends Application {
 		top.setText("");
 		bottom.clear();
 	}
-	
-	private void addTextToTop () {
+
+	private void addTextToTop() {
 		if (outStringBuilder.length() > 0) {
 			top.appendText(outStringBuilder.toString());
 			outStringBuilder = new StringBuilder();
@@ -46,24 +46,24 @@ public class GUI extends Application {
 
 	@Override
 	public void start(Stage primaryStage) throws Exception {
-		
+
 		inp.connect(out);
 		textToShow = "";
 
 		close = new Button("X");
-		close.setPrefSize(5,5);
+		close.setPrefSize(5, 5);
 		minimize = new Button("_");
-		minimize.setPrefSize(5,5);
+		minimize.setPrefSize(5, 5);
 
 		HBox buttons = new HBox(5);
 		buttons.setAlignment(Pos.TOP_RIGHT);
-	
+
 		buttons.getChildren().addAll(minimize, close);
 
 		top = new TextArea();
 		top.setMinSize(900, 450);
 		top.setEditable(false);
-		top.setText("Welcome to OS simulator!\n");
+		top.setText("Welcome to the OS emulator!\n");
 
 		bottom = new TextField();
 		bottom.setMinSize(900, 62);
@@ -88,10 +88,10 @@ public class GUI extends Application {
 				textToShow += ">" + bottom.getText() + "\n";
 				top.appendText(textToShow);
 				ShellCommands.returnCommand();
-		
+
 				bottom.clear();
 				textToShow = "";
-				
+
 			} catch (IOException e1) {
 				e1.printStackTrace();
 			}
@@ -114,17 +114,16 @@ public class GUI extends Application {
 				e.consume();
 			}
 		});
-		
+
 		outStream = new OutputStream() {
 			public void write(int b) throws IOException {
-					outStringBuilder.append((char) b);
-					if (((char) b) == '\n')
-						addTextToTop();
+				outStringBuilder.append((char) b);
+				if (((char) b) == '\n')
+					addTextToTop();
 			}
 		};
-		
+
 		ShellCommands.setOut(outStream);
-				
 
 		VBox root = new VBox(15);
 		root.setPadding(new Insets(10, 30, 30, 30));
@@ -138,7 +137,7 @@ public class GUI extends Application {
 		primaryStage.setTitle("Console");
 		primaryStage.setResizable(false);
 		primaryStage.show();
-		
+
 		bottom.requestFocus();
 
 	}

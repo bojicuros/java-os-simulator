@@ -2,11 +2,10 @@ package memory;
 
 public class Block {
 
-	private final static int SIZE = 4;  
-	private byte[] content = new byte[SIZE];  
-	private final int adress; 
-	private boolean occupied; 
-	
+	private final static int SIZE = 4;
+	private byte[] content = new byte[SIZE];
+	private final int adress;
+	private boolean occupied;
 
 	public Block(int adress) {
 		this.adress = adress;

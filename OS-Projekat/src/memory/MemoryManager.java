@@ -159,9 +159,8 @@ public class MemoryManager {
 
 	public static int memoryOccupiedByProcess(Process process) {
 		for (PartitionMemory partition : partitionsInRam)
-			if (partition.getProcess().equals(process)) {
+			if (partition.getProcess().getPid() == process.getPid())
 				return partition.getSize();
-			}
 		return 0;
 	}
 

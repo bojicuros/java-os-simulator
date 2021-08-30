@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
-import memory.MemoryManager;
 import shell.Shell;
 
 public class Process {
@@ -15,6 +14,7 @@ public class Process {
 	private String filePath;
 	private ProcessState state;
 	private ArrayList<String> instructions;
+	private int size;
 	private int startAdress; // Address of program instructions in main memory
 	private int[] valuesOfRegisters; // To remember values of registers when switching to next process
 	private int pcValue = -1; // To remember PC value when switching to next process
@@ -27,6 +27,7 @@ public class Process {
 		instructions = new ArrayList<>();
 		valuesOfRegisters = new int[4];
 		readFile();
+		size = instructions.size();
 		ProcessScheduler.allProcesses.add(this);
 		ProcessScheduler.readyQueue.add(this);
 	}
@@ -51,7 +52,10 @@ public class Process {
 	}
 
 	public void block() {
-		this.state = ProcessState.BLOCKED;
+		if (this.state == ProcessState.READY) {
+			this.state = ProcessState.BLOCKED;
+			ProcessScheduler.readyQueue.remove(this);
+		}
 	}
 
 	public void unblock() {
@@ -62,7 +66,10 @@ public class Process {
 	}
 
 	public void terminate() {
-		this.state = ProcessState.TERMINATED;
+		if (this.state == ProcessState.READY) {
+			this.state = ProcessState.TERMINATED;
+			ProcessScheduler.readyQueue.remove(this);
+		}
 	}
 
 	public int getPid() {
@@ -118,10 +125,12 @@ public class Process {
 		this.instructions = instructions;
 	}
 
-	@Override
-	public String toString() {
-		return "Process " + name + " with pid = " + pid + " is in the " + state
-				+ " state and its occupation of memory is " + MemoryManager.memoryOccupiedByProcess(this);
+	public int getSize() {
+		return size;
+	}
+
+	public void setSize(int size) {
+		this.size = size;
 	}
 
 }

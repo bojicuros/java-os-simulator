@@ -107,6 +107,13 @@ public class ProcessScheduler {
 		System.out.println("You entered name of nonexistent process, check and try again");
 	}
 
+	public static void listOfProcesses() {
+		System.out.println("PID\tProgram\t\tSize\tState\tCurrent occupation of memory");
+		for (Process process : allProcesses)
+			System.out.println(process.getPid() + "\t" + process.getName() + "\t " + process.getSize() + "\t"
+					+ ProcessState.state(process.getState()) + "\t" + MemoryManager.memoryOccupiedByProcess(process));
+	}
+
 	public Queue<Process> getReadyQueue() {
 		return readyQueue;
 	}
