@@ -5,6 +5,7 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.util.ArrayList;
 
+import memory.MemoryManager;
 import shell.Shell;
 
 public class Process {
@@ -24,7 +25,7 @@ public class Process {
 		this.filePath = filePath;
 		name = fileName(filePath);
 		instructions = new ArrayList<>();
-		valuesOfRegisters = new int[5];
+		valuesOfRegisters = new int[4];
 		readFile();
 		ProcessScheduler.allProcesses.add(this);
 		ProcessScheduler.readyQueue.add(this);
@@ -54,8 +55,10 @@ public class Process {
 	}
 
 	public void unblock() {
-		this.state = ProcessState.READY;
-		ProcessScheduler.readyQueue.add(this);
+		if (this.state == ProcessState.BLOCKED) {
+			this.state = ProcessState.READY;
+			ProcessScheduler.readyQueue.add(this);
+		}
 	}
 
 	public void terminate() {
@@ -117,7 +120,8 @@ public class Process {
 
 	@Override
 	public String toString() {
-		return "Process [pid=" + pid + ", name=" + name + ", state=" + state + "]";
+		return "Process " + name + " with pid = " + pid + " is in the " + state
+				+ " state and its occupation of memory is " + MemoryManager.memoryOccupiedByProcess(this);
 	}
 
 }

@@ -62,10 +62,9 @@ public class ShellCommands{
 			break;
 
 		case "load": // load
-			if (commands.length == 3) {
-				String parameter1 = commands[1];
-				String parameter2 = commands[2];
-				ShellExe.load(parameter1, parameter2);
+			if (commands.length == 2) {
+				String parameter = commands[1];
+				ShellExe.load(parameter);
 			} else
 				errorWithParameters();
 			break;

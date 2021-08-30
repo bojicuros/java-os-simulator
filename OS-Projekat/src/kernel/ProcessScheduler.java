@@ -39,13 +39,17 @@ public class ProcessScheduler {
 			System.out.println("Process " + process.getName() + " started to execute");
 			int startAdress = Shell.manager.loadProcess(process);
 			process.setStartAdress(startAdress);
-			Shell.PC = process.getStartAdress();
+			Shell.base = startAdress;
+			Shell.limit = process.getInstructions().size();
+			Shell.PC = 0;
 			process.setState(ProcessState.RUNNING);
 			execute(process, System.currentTimeMillis());
 		} else { // we need to continue process
 			System.out.println("Process " + process.getName() + " is executing again");
 			int startAdress = Shell.manager.loadProcess(process);
 			process.setStartAdress(startAdress);
+			Shell.base = startAdress;
+			Shell.limit = process.getInstructions().size();
 			Shell.loadValues();
 			process.setState(ProcessState.RUNNING);
 			execute(process, System.currentTimeMillis());
@@ -54,7 +58,7 @@ public class ProcessScheduler {
 
 	private static void execute(Process process, long startTime) {
 		while (process.getState() == ProcessState.RUNNING && System.currentTimeMillis() - startTime < timeQuantum) {
-			int temp = Ram.getAt(Shell.PC);
+			int temp = Ram.getAt(Shell.PC + Shell.base);
 			String instruction = Shell.fromIntToInstruction(temp);
 			Shell.IR = instruction;
 			Shell.executeMachineInstruction();
@@ -65,6 +69,7 @@ public class ProcessScheduler {
 			Shell.saveValues();
 		} else if (process.getState() == ProcessState.TERMINATED) {
 			System.out.println("You have terminated process " + process.getName());
+			MemoryManager.removeProcess(process);
 		} else if (process.getState() == ProcessState.DONE) {
 			System.out.println("Process " + process.getName() + " is done");
 			Operations.printRegisters();
@@ -100,14 +105,6 @@ public class ProcessScheduler {
 				return;
 			}
 		System.out.println("You entered name of nonexistent process, check and try again");
-	}
-
-	public static String processList() {
-		String s = "";
-		for (Process process : allProcesses)
-			s += process + "\n";
-		s += "---------------------------";
-		return s;
 	}
 
 	public Queue<Process> getReadyQueue() {

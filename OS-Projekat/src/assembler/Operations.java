@@ -25,7 +25,6 @@ public class Operations {
 	public static Register R2 = new Register("R2", Constants.R2, 0);
 	public static Register R3 = new Register("R3", Constants.R3, 0);
 	public static Register R4 = new Register("R4", Constants.R4, 0);
-	public static Register R5 = new Register("R5", Constants.R5, 0);
 
 	public static void store(String reg, String adr) {
 		Register r = getRegister(reg);
@@ -35,8 +34,10 @@ public class Operations {
 
 	public static void load(String reg, String adr) {
 		Register r = getRegister(reg);
-		if (r != null)
-			r.value = Ram.getAt(Integer.parseInt(adr, 2));
+		if (r != null) {
+			if (!Ram.isOcupied(Integer.parseInt(adr, 2)))
+				r.value = Ram.getAt(Integer.parseInt(adr, 2));
+		}
 	}
 
 	// postavlja vrijednost registra1 na registar2
@@ -81,7 +82,7 @@ public class Operations {
 	public static void mul(String reg, String val) {
 		Register r = getRegister(reg);
 		if (val.length() == 8) { // vrijednost
-			if (r != null) 
+			if (r != null)
 				r.value *= Integer.parseInt(val, 2);
 		} else if (val.length() == 4) { // registar
 			Register r2 = getRegister(val);
@@ -92,23 +93,38 @@ public class Operations {
 
 	public static void jmp(String adr) {
 		int temp = Integer.parseInt(adr, 2);
-		Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+		if (temp >= Shell.limit) {
+			Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+			System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+			return;
+		}
+		Shell.PC = temp;
 	}
 
-	//jump if lesser
+	// jump if lesser
 	public static boolean jmpl(String reg, String val, String adr) {
 		Register r1 = getRegister(reg);
-		if(val.length() == 8){	//drugi argument je vrijednost
-			if(r1 != null && r1.value < Integer.parseInt(val,2)){
+		if (val.length() == 8) { // drugi argument je vrijednost
+			if (r1 != null && r1.value < Integer.parseInt(val, 2)) {
 				int temp = Integer.parseInt(adr, 2);
-				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				if (temp >= Shell.limit) {
+					Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+					System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+					return false;
+				}
+				Shell.PC = temp;
 				return true;
 			}
-		} else if(val.length() == 4){	//i drugi je registar
+		} else if (val.length() == 4) { // i drugi je registar
 			Register r2 = getRegister(val);
 			if (r1 != null && r2 != null && r1.value < r2.value) {
 				int temp = Integer.parseInt(adr, 2);
-				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				if (temp >= Shell.limit) {
+					Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+					System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+					return false;
+				}
+				Shell.PC = temp;
 				return true;
 			}
 		}
@@ -116,60 +132,90 @@ public class Operations {
 		return false;
 	}
 
-	//jump if greater
+	// jump if greater
 	public static boolean jmpg(String reg, String val, String adr) {
 		Register r1 = getRegister(reg);
-		if(val.length() == 8){	//drugi argument je vrijednost
-			if(r1 != null && r1.value > Integer.parseInt(val,2)){
+		if (val.length() == 8) { // drugi argument je vrijednost
+			if (r1 != null && r1.value > Integer.parseInt(val, 2)) {
 				int temp = Integer.parseInt(adr, 2);
-				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				if (temp >= Shell.limit) {
+					Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+					System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+					return false;
+				}
+				Shell.PC = temp;
 				return true;
 			}
-		} else if(val.length() == 4){	//i drugi je registar
+		} else if (val.length() == 4) { // i drugi je registar
 			Register r2 = getRegister(val);
 			if (r1 != null && r2 != null && r1.value > r2.value) {
 				int temp = Integer.parseInt(adr, 2);
-				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				if (temp >= Shell.limit) {
+					Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+					System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+					return false;
+				}
+				Shell.PC = temp;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	//jump if equal
+	// jump if equal
 	public static boolean jmpe(String reg, String val, String adr) {
 		Register r1 = getRegister(reg);
-		if(val.length() == 8){	//drugi argument je vrijednost
-			if(r1 != null && r1.value == Integer.parseInt(val,2)){
+		if (val.length() == 8) { // drugi argument je vrijednost
+			if (r1 != null && r1.value == Integer.parseInt(val, 2)) {
 				int temp = Integer.parseInt(adr, 2);
-				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				if (temp >= Shell.limit) {
+					Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+					System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+					return false;
+				}
+				Shell.PC = temp;
 				return true;
 			}
-		} else if(val.length() == 4){	//i drugi je registar
+		} else if (val.length() == 4) { // i drugi je registar
 			Register r2 = getRegister(val);
 			if (r1 != null && r2 != null && r1.value == r2.value) {
 				int temp = Integer.parseInt(adr, 2);
-				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				if (temp >= Shell.limit) {
+					Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+					System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+					return false;
+				}
+				Shell.PC = temp;
 				return true;
 			}
 		}
 		return false;
 	}
 
-	//jump if different
+	// jump if different
 	public static boolean jmpd(String reg, String val, String adr) {
 		Register r1 = getRegister(reg);
-		if(val.length() == 8){	//drugi argument je vrijednost
-			if(r1 != null && r1.value != Integer.parseInt(val,2)){
+		if (val.length() == 8) { // drugi argument je vrijednost
+			if (r1 != null && r1.value != Integer.parseInt(val, 2)) {
 				int temp = Integer.parseInt(adr, 2);
-				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				if (temp >= Shell.limit) {
+					Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+					System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+					return false;
+				}
+				Shell.PC = temp;
 				return true;
 			}
-		} else if(val.length() == 4){	//i drugi je registar
+		} else if (val.length() == 4) { // i drugi je registar
 			Register r2 = getRegister(val);
 			if (r1 != null && r2 != null && r1.value != r2.value) {
 				int temp = Integer.parseInt(adr, 2);
-				Shell.PC = Shell.currentlyExecuting.getStartAdress() + temp;
+				if (temp >= Shell.limit) {
+					Shell.currentlyExecuting.setState(ProcessState.TERMINATED);
+					System.out.println("Error with adress in process " + Shell.currentlyExecuting.getName());
+					return false;
+				}
+				Shell.PC = temp;
 				return true;
 			}
 		}
@@ -201,8 +247,6 @@ public class Operations {
 			return R3;
 		case Constants.R4:
 			return R4;
-		case Constants.R5:
-			return R5;
 		default:
 			return null;
 		}
@@ -213,7 +257,6 @@ public class Operations {
 		System.out.println("R2 value - [ " + R2.value + " ]");
 		System.out.println("R3 value - [ " + R3.value + " ]");
 		System.out.println("R4 value - [ " + R4.value + " ]");
-		System.out.println("R5 value - [ " + R5.value + " ]");
 	}
 
 	public static void clearRegisters() {
@@ -221,7 +264,6 @@ public class Operations {
 		R2.value = 0;
 		R3.value = 0;
 		R4.value = 0;
-		R5.value = 0;
 	}
 
 }

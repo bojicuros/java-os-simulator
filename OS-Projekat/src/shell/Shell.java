@@ -8,25 +8,19 @@ import kernel.Process;
 import kernel.ProcessScheduler;
 import memory.MemoryManager;
 
-public class Shell  {
+public class Shell {
 
 	public static File workingDirectory;
 	public static MemoryManager manager;
 	public static Process currentlyExecuting = null;
 	public static int PC; // Program counter
 	public static String IR; // Instruction register
+	public static int base;
+	public static int limit;
 
-	public static void main(String[] args) {
-		manager = new MemoryManager();
+	public static void boot() {
+		Shell.manager = new MemoryManager();
 		ProcessScheduler.getReady();
-		// on load
-		new Process("petlja.txt");
-		new Process("suma.txt");
-		new Process("stepen.txt");
-		new Process("faktorijel.txt");
-
-		// on execute
-		ProcessScheduler.start();
 	}
 
 	public static String asemblerToMachineInstruction(String command) {
@@ -100,9 +94,6 @@ public class Shell  {
 			case "R4":
 				instruction += Constants.R4;
 				break;
-			case "R5":
-				instruction += Constants.R5;
-				break;
 			}
 			instruction += toBinary(arr[2]); // +vrijendost
 			instruction += toBinary(arr[3]); // +adresa
@@ -121,9 +112,6 @@ public class Shell  {
 			case "R4":
 				instruction += Constants.R4;
 				break;
-			case "R5":
-				instruction += Constants.R5;
-				break;
 			}
 			return instruction;
 		} else if (arr[2].equals("R1") || arr[2].equals("R2") || arr[2].equals("R3") || arr[2].equals("R4")
@@ -141,9 +129,6 @@ public class Shell  {
 			case "R4":
 				instruction += Constants.R4;
 				break;
-			case "R5":
-				instruction += Constants.R5;
-				break;
 			}
 			switch (arr[2]) {
 			case "R1":
@@ -157,9 +142,6 @@ public class Shell  {
 				break;
 			case "R4":
 				instruction += Constants.R4;
-				break;
-			case "R5":
-				instruction += Constants.R5;
 				break;
 			}
 			return instruction;
@@ -176,9 +158,6 @@ public class Shell  {
 				break;
 			case "R4":
 				instruction += Constants.R4;
-				break;
-			case "R5":
-				instruction += Constants.R5;
 				break;
 			}
 			instruction += toBinary(arr[2]); // +vrijednost
@@ -291,6 +270,7 @@ public class Shell  {
 			PC++;
 	}
 
+	// pretvara vrijednost iz ram memorije (int) u masinsku instrukciju
 	public static String fromIntToInstruction(int temp) {
 		String help = Integer.toBinaryString(temp);
 		if (help == "0")
@@ -313,21 +293,23 @@ public class Shell  {
 		return help;
 	}
 
+	// cuva vrijednost programskog brojaca i registara procesa koji je prekinut od
+	// strane rasporedjivaca
 	public static void saveValues() {
-		int[] registers = { Operations.R1.value, Operations.R2.value, Operations.R3.value, Operations.R4.value,
-				Operations.R5.value };
+		int[] registers = { Operations.R1.value, Operations.R2.value, Operations.R3.value, Operations.R4.value };
 		currentlyExecuting.setValuesOfRegisters(registers);
-		currentlyExecuting.setPcValue(PC - currentlyExecuting.getStartAdress());
+		currentlyExecuting.setPcValue(PC);
 	}
 
+	// ucitava zapamcene vrijednosti kako bi proces nastavio izvrsavanje kao da
+	// prekida nije ni bilo
 	public static void loadValues() {
 		int[] registers = currentlyExecuting.getValuesOfRegisters();
 		Operations.R1.value = registers[0];
 		Operations.R2.value = registers[1];
 		Operations.R3.value = registers[2];
 		Operations.R4.value = registers[3];
-		Operations.R5.value = registers[4];
-		PC = currentlyExecuting.getPcValue() + currentlyExecuting.getStartAdress();
+		PC = currentlyExecuting.getPcValue();
 	}
 
 }

@@ -1,15 +1,16 @@
 package shell;
 
 import kernel.ProcessScheduler;
+import kernel.Process;
 
 public class ShellExe {
 
 	public static void ls() {
-		System.out.println("RADII");
+
 	}
 
 	public static void cd(String par) {
-		
+
 	}
 
 	public static void md(String par) {
@@ -24,36 +25,31 @@ public class ShellExe {
 
 	}
 
-	public static void load(String par1, String par2) {
-
+	public static void load(String par) {
+		new Process(par);
 	}
 
 	public static void exe() {
-
+		ProcessScheduler.start();
 	}
 
 	public static void lspr() {
-		String answer = ProcessScheduler.processList();
-		System.out.println(answer);
+		System.out.println("All processes:");
+		for (Process process : ProcessScheduler.allProcesses) {
+			System.out.println("  " + process);
+		}
 	}
 
 	public static void trmpr(String par) {
-		ProcessScheduler.terminateProcess(par);
-		String answer = par + " has been terminated";
-		System.out.println(answer);
-		
+
 	}
 
 	public static void blpr(String par) {
-		ProcessScheduler.blockProcess(par);
-		String answer = par + " has been blocked";
-		System.out.println(answer);
+
 	}
 
 	public static void ublpr(String par) {
-		ProcessScheduler.unblockProcess(par);
-		String answer = par + " has been blocked";
-		System.out.println(answer);
+
 	}
 
 	public static void clear() {

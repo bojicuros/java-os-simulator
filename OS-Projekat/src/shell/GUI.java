@@ -28,6 +28,7 @@ public class GUI extends Application {
 	private int len = 0;
 	
 	public static void main(String[] args) throws IOException {
+		Shell.boot();
 		launch(args);
 	}
 

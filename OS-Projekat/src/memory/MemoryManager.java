@@ -157,6 +157,14 @@ public class MemoryManager {
 		}
 	}
 
+	public static int memoryOccupiedByProcess(Process process) {
+		for (PartitionMemory partition : partitionsInRam)
+			if (partition.getProcess().equals(process)) {
+				return partition.getSize();
+			}
+		return 0;
+	}
+
 	public static ArrayList<PartitionMemory> getPartitionsInRam() {
 		return partitionsInRam;
 	}
