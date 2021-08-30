@@ -6,23 +6,23 @@ import kernel.Process;
 public class ShellExe {
 
 	public static void ls() {
-
+		Shell.fileSystem.printContent();
 	}
 
 	public static void cd(String par) {
-
+		Shell.fileSystem.changeFolder(par);
 	}
 
 	public static void md(String par) {
-
+		Shell.fileSystem.addFolder(par);
 	}
 
 	public static void dd(String par) {
-
+		Shell.fileSystem.deleteFile(par);
 	}
 
-	public static void rd(String par1, String par2) {
-
+	public static void rd(String name, String newName) {
+		Shell.fileSystem.renameFile(name, newName);
 	}
 
 	public static void load(String par) {

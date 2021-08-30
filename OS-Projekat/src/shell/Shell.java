@@ -7,11 +7,12 @@ import assembler.Operations;
 import kernel.Process;
 import kernel.ProcessScheduler;
 import memory.MemoryManager;
-
+import FileSystem.FileSystem;
 public class Shell {
 
 	public static File workingDirectory;
 	public static MemoryManager manager;
+	public static FileSystem fileSystem;
 	public static Process currentlyExecuting = null;
 	public static int PC; // Program counter
 	public static String IR; // Instruction register
@@ -21,6 +22,7 @@ public class Shell {
 	public static void boot() {
 		Shell.manager = new MemoryManager();
 		ProcessScheduler.getReady();
+		fileSystem=new FileSystem();
 	}
 
 	public static String asemblerToMachineInstruction(String command) {
