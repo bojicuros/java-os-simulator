@@ -22,7 +22,7 @@ public class ShellExe {
 	}
 
 	public static void rd(String name, String newName) {
-		Shell.fileSystem.renameFile(name, newName);
+		// Shell.fileSystem.renameFile(name, newName);
 	}
 
 	public static void load(String par) {
@@ -38,15 +38,15 @@ public class ShellExe {
 	}
 
 	public static void trm(String par) {
-		ProcessScheduler.terminateProcess(par);
+		ProcessScheduler.terminateProcess(Integer.parseInt(par));
 	}
 
 	public static void block(String par) {
-		ProcessScheduler.blockProcess(par);
+		ProcessScheduler.blockProcess(Integer.parseInt(par));
 	}
 
 	public static void unblock(String par) {
-		ProcessScheduler.unblockProcess(par);
+		ProcessScheduler.unblockProcess(Integer.parseInt(par));
 	}
 
 	public static void clear() {

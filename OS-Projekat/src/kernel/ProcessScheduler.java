@@ -80,27 +80,27 @@ public class ProcessScheduler {
 		Operations.clearRegisters();
 	}
 
-	public static void blockProcess(String name) {
+	public static void blockProcess(Integer pid) {
 		for (Process process : allProcesses)
-			if (process.getName().equals(name)) {
+			if (process.getPid() == pid) {
 				process.block();
 				return;
 			}
 		System.out.println("You entered name of nonexistent process, check and try again");
 	}
 
-	public static void unblockProcess(String name) {
+	public static void unblockProcess(Integer pid) {
 		for (Process process : allProcesses)
-			if (process.getName().equals(name)) {
+			if (process.getPid() == pid) {
 				process.unblock();
 				return;
 			}
 		System.out.println("You entered name of nonexistent process, check and try again");
 	}
 
-	public static void terminateProcess(String name) {
+	public static void terminateProcess(Integer pid) {
 		for (Process process : allProcesses)
-			if (process.getName().equals(name)) {
+			if (process.getPid() == pid) {
 				process.terminate();
 				return;
 			}
@@ -108,10 +108,10 @@ public class ProcessScheduler {
 	}
 
 	public static void listOfProcesses() {
-		System.out.println("PID\tProgram\t\tSize\tState\tCurrent occupation of memory");
+		System.out.println("PID\tProgram\t\tSize\tState\t\tCurrent occupation of memory");
 		for (Process process : allProcesses)
 			System.out.println(process.getPid() + "\t" + process.getName() + "\t " + process.getSize() + "\t"
-					+ ProcessState.state(process.getState()) + "\t" + MemoryManager.memoryOccupiedByProcess(process));
+					+ ProcessState.state(process.getState()) + "\t\t" + MemoryManager.memoryOccupiedByProcess(process));
 	}
 
 	public Queue<Process> getReadyQueue() {

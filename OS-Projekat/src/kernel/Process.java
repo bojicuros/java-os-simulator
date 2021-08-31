@@ -28,6 +28,7 @@ public class Process {
 		valuesOfRegisters = new int[4];
 		readFile();
 		size = instructions.size();
+		System.out.println("Program " + name + " (PID = " + pid + ") is loaded and sent in the background");
 		ProcessScheduler.allProcesses.add(this);
 		ProcessScheduler.readyQueue.add(this);
 	}
