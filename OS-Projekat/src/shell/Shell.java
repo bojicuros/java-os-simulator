@@ -98,7 +98,24 @@ public class Shell {
 				instruction += Constants.R4;
 				break;
 			}
-			instruction += toBinary(arr[2]); // +vrijendost
+			if(arr[2].length() == 8){
+				instruction += toBinary(arr[2]); // +vrijendost
+			} else {
+				switch (arr[1]) { // +registar
+					case "R1":
+						instruction += Constants.R1;
+						break;
+					case "R2":
+						instruction += Constants.R2;
+						break;
+					case "R3":
+						instruction += Constants.R3;
+						break;
+					case "R4":
+						instruction += Constants.R4;
+						break;
+					}
+			}
 			instruction += toBinary(arr[3]); // +adresa
 			return instruction;
 		} else if (arr[0].equals("INC") || arr[0].equals("DEC")) {
