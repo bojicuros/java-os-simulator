@@ -6,9 +6,9 @@ public class SecondaryMemory {
 	private static int size;
 	private static Block[] blocks;
 	private static int numberOfBlocks;
-	private static ArrayList<File> files;
+	public static ArrayList<FileInMemory> files;
 
-	public static void loadSecoundaryMemory() {
+	public SecondaryMemory() {
 		size = 2048;
 		numberOfBlocks = size / Block.getSize();
 		blocks = new Block[numberOfBlocks];
@@ -19,7 +19,7 @@ public class SecondaryMemory {
 		files = new ArrayList<>();
 	}
 
-	public static boolean save(File file) {
+	public void save(FileInMemory file) {
 		int reminder = file.getSize() % Block.getSize();
 		int numOfBlocks;
 		if (reminder == 0)
@@ -32,7 +32,7 @@ public class SecondaryMemory {
 			for (int i = 0; i < numberOfBlocks; i++)
 				if (!blocks[i].isOccupied()) {
 					blocks[i].setOccupied(true);
-					blocks[i].setContent(File.part(counter));
+					blocks[i].setContent(FileInMemory.part(counter));
 					if (counter == 0) {
 						first = new Pointer(blocks[i]);
 						file.setStart(first);
@@ -45,15 +45,15 @@ public class SecondaryMemory {
 						if (counter == numOfBlocks) {
 							file.setLength(counter);
 							files.add(file);
-							return true;
+							return;
 						}
 					}
 				}
-		}
-		return false;
+		} else
+			System.out.println("Not enough space, cannot create file ");
 	}
 
-	public static void deleteFile(File file) {
+	public void deleteFile(FileInMemory file) {
 		if (!files.contains(file))
 			System.out.println("Your file is not in the secondary memory");
 		else {
@@ -71,7 +71,7 @@ public class SecondaryMemory {
 		files.remove(file);
 	}
 
-	public static String readFile(File file) {
+	public String readFile(FileInMemory file) {
 		String read = "";
 		Pointer pointer = file.getStart();
 		byte[] content = pointer.block.getContent();
@@ -86,7 +86,7 @@ public class SecondaryMemory {
 		return read;
 	}
 
-	public static void updateFile(File file) {
+	public void updateFile(FileInMemory file) {
 		if (!files.contains(file))
 			save(file);
 		else {
@@ -119,7 +119,7 @@ public class SecondaryMemory {
 		return counter;
 	}
 
-	private static int numberOfBlocksOccupiedByFile(File file) {
+	private static int numberOfBlocksOccupiedByFile(FileInMemory file) {
 		int counter = 0;
 		Pointer pointer = file.getStart();
 		counter++;
@@ -130,6 +130,20 @@ public class SecondaryMemory {
 		return counter;
 	}
 
+	public boolean contains(FileInMemory file) {
+		for (FileInMemory f : files)
+			if (f.getName().equals(file.getName()) && f.getSize() == file.getSize())
+				return true;
+		return false;
+	}
+
+	public FileInMemory getFile(String fileName) {
+		for (FileInMemory f : files)
+			if (f.getName().equals(fileName))
+				return f;
+		return null;
+	}
+
 	public static int getSize() {
 		return size;
 	}
@@ -138,18 +152,20 @@ public class SecondaryMemory {
 		return blocks;
 	}
 
-	public ArrayList<File> getFiles() {
+	public ArrayList<FileInMemory> getFiles() {
 		return files;
 	}
 
 	public static void printMemoryAllocationTable() {
-		System.out
-				.println(String.format("%15s %25s %10s %24s %10s", "Name of file", "|", "Start block", "|", "Length"));
-		System.out.println(String.format("%s",
-				"-----------------------------------------------------------------------------------------------------"));
-		for (File file : files)
-			System.out.println(String.format("%15s %25s %10s %25s %10s", file.getName(), "|",
-					file.getStart().block.getAdress() + "", "|", file.getLength() + ""));
+		String line = "------------------------------------------------------------------------------------------";
+		System.out.println("Memory Allocation Table:");
+		System.out.println(line);
+		System.out.println("Name of file\t\tStart block\tLength");
+		System.out.println(line);
+		for (FileInMemory file : files)
+			System.out.println(file.getName() + (file.getName().length() < 15
+					? ("\t\t" + file.getStart().block.getAdress() + "\t\t" + file.getLength())
+					: ("\t" + file.getStart().block.getAdress() + "\t\t" + file.getLength())));
 	}
 
 	protected static class Pointer {

@@ -2,20 +2,21 @@ package memory;
 
 import memory.SecondaryMemory.Pointer;
 
-public class File {
+public class FileInMemory {
 	private String name;
-	private int size;  
+	private int size;
 	private Pointer start;
-	private int length; 
+	private int length;
 	private static byte[] contentFile = new byte[0];
 
-	public File(String name, int size) {
-		this.size = size;
+	public FileInMemory(String name, byte[] content) {
 		this.name = name;
+		contentFile = content;
+		size = contentFile.length;
 	}
 
 	public static byte[] part(int index) {
-		byte[] part = new byte[Block.getSize()]; 
+		byte[] part = new byte[Block.getSize()];
 		int counter = 0;
 		for (int i = index * Block.getSize(); i < contentFile.length; i++) {
 			part[counter] = contentFile[i];
@@ -64,6 +65,6 @@ public class File {
 	}
 
 	public void setContentFile(byte[] contentFile) {
-		File.contentFile = contentFile;
+		FileInMemory.contentFile = contentFile;
 	}
 }

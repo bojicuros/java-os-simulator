@@ -61,6 +61,13 @@ public class ShellCommands {
 				errorWithParameters();
 			break;
 
+		case "mem": // print memory
+			if (commands.length == 1) {
+				ShellExe.mem();
+			} else
+				errorWithParameters();
+			break;
+
 		case "load": // load
 			if (commands.length == 2) {
 				String parameter = commands[1];

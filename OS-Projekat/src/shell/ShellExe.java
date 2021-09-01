@@ -1,28 +1,34 @@
 package shell;
 
+import fileSystem.FileSystem;
 import kernel.Process;
 import kernel.ProcessScheduler;
+import memory.MemoryManager;
 
 public class ShellExe {
 
 	public static void ls() {
-		Shell.fileSystem.printContent();
+		FileSystem.listFiles();
 	}
 
 	public static void cd(String par) {
-		Shell.fileSystem.changeFolder(par);
+		FileSystem.changeDirectory(par);
 	}
 
 	public static void md(String par) {
-		Shell.fileSystem.addFolder(par);
+		FileSystem.makeDirectory(par);
 	}
 
 	public static void dd(String par) {
-		Shell.fileSystem.deleteFile(par);
+		FileSystem.deleteDirectory(par);
 	}
 
 	public static void rd(String name, String newName) {
-		// Shell.fileSystem.renameFile(name, newName);
+		FileSystem.renameDirectory(name, newName);
+	}
+
+	public static void mem() {
+		MemoryManager.printMemory();
 	}
 
 	public static void load(String par) {
@@ -30,7 +36,7 @@ public class ShellExe {
 	}
 
 	public static void exe() {
-		ProcessScheduler.start();
+		new ProcessScheduler().start();
 	}
 
 	public static void pr() {
@@ -61,6 +67,7 @@ public class ShellExe {
 		help += "MD \t\t Make dir.\n";
 		help += "DD \t\t Delete dir.\n";
 		help += "RD \t\t Rename dir.\n";
+		help += "MEM \t\t Show RAM, registers and memory allocation table.\n";
 		help += "LOAD \t\t Load and send procces in the background. \n";
 		help += "EXE \t\t Start executing processes. \n";
 		help += "PR \t\t List of processes.\n";

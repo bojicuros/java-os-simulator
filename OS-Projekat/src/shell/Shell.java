@@ -2,28 +2,30 @@ package shell;
 
 import java.io.File;
 
-import FileSystem.FileSystem;
 import assembler.Constants;
 import assembler.Operations;
+import fileSystem.FileSystem;
 import kernel.Process;
 import kernel.ProcessScheduler;
 import memory.MemoryManager;
+import memory.SecondaryMemory;
 
 public class Shell {
 
-	public static File workingDirectory;
+	public static FileSystem tree;
 	public static MemoryManager manager;
-	public static FileSystem fileSystem;
 	public static Process currentlyExecuting = null;
+	public static SecondaryMemory memory;
 	public static int PC; // Program counter
 	public static String IR; // Instruction register
 	public static int base;
 	public static int limit;
 
 	public static void boot() {
+		new ProcessScheduler();
+		memory = new SecondaryMemory();
 		Shell.manager = new MemoryManager();
-		ProcessScheduler.getReady();
-		fileSystem=new FileSystem();
+		tree = new FileSystem(new File("Programs"));
 	}
 
 	public static String asemblerToMachineInstruction(String command) {
@@ -98,23 +100,23 @@ public class Shell {
 				instruction += Constants.R4;
 				break;
 			}
-			if(arr[2].length() == 8){
+			if (!arr[2].equals("R1") && !arr[2].equals("R2") && !arr[2].equals("R3") && !arr[2].equals("R4")) {
 				instruction += toBinary(arr[2]); // +vrijendost
 			} else {
-				switch (arr[1]) { // +registar
-					case "R1":
-						instruction += Constants.R1;
-						break;
-					case "R2":
-						instruction += Constants.R2;
-						break;
-					case "R3":
-						instruction += Constants.R3;
-						break;
-					case "R4":
-						instruction += Constants.R4;
-						break;
-					}
+				switch (arr[2]) { // +registar
+				case "R1":
+					instruction += Constants.R1;
+					break;
+				case "R2":
+					instruction += Constants.R2;
+					break;
+				case "R3":
+					instruction += Constants.R3;
+					break;
+				case "R4":
+					instruction += Constants.R4;
+					break;
+				}
 			}
 			instruction += toBinary(arr[3]); // +adresa
 			return instruction;
@@ -222,32 +224,29 @@ public class Shell {
 			String val2 = IR.substring(8, 16);
 			Operations.store(r1, val2);
 		} else if (operation.equals(Operations.add)) {
+			String r1 = IR.substring(4, 8);
 			if (IR.length() == 12) { // oba registra
-				String r1 = IR.substring(4, 8);
 				String r2 = IR.substring(8, 12);
 				Operations.add(r1, r2);
 			} else if (IR.length() == 16) { // registar pa vrijednost
-				String r1 = IR.substring(4, 8);
 				String val2 = IR.substring(8, 16);
 				Operations.add(r1, val2);
 			}
 		} else if (operation.equals(Operations.sub)) {
+			String r1 = IR.substring(4, 8);
 			if (IR.length() == 12) { // oba registra
-				String r1 = IR.substring(4, 8);
 				String r2 = IR.substring(8, 12);
 				Operations.sub(r1, r2);
 			} else if (IR.length() == 16) { // registar pa vrijednost
-				String r1 = IR.substring(4, 8);
 				String val2 = IR.substring(8, 16);
 				Operations.sub(r1, val2);
 			}
 		} else if (operation.equals(Operations.mul)) {
+			String r1 = IR.substring(4, 8);
 			if (IR.length() == 12) { // oba registra
-				String r1 = IR.substring(4, 8);
 				String r2 = IR.substring(8, 12);
 				Operations.mul(r1, r2);
 			} else if (IR.length() == 16) { // registar pa vrijednost
-				String r1 = IR.substring(4, 8);
 				String val2 = IR.substring(8, 16);
 				Operations.mul(r1, val2);
 			}
@@ -257,18 +256,39 @@ public class Shell {
 			programCounterChanged = true;
 		} else if (operation.equals(Operations.jmpl)) {
 			String reg = IR.substring(4, 8);
-			String val = IR.substring(8, 16);
-			String adr = IR.substring(16, 24);
+			String val = null;
+			String adr = null;
+			if (IR.length() == 20) { // oba registra
+				val = IR.substring(8, 12);
+				adr = IR.substring(12, 20);
+			} else if (IR.length() == 24) { // registar i vrijednost
+				val = IR.substring(8, 16);
+				adr = IR.substring(16, 24);
+			}
 			programCounterChanged = Operations.jmpl(reg, val, adr);
 		} else if (operation.equals(Operations.jmpg)) {
 			String reg = IR.substring(4, 8);
-			String val = IR.substring(8, 16);
-			String adr = IR.substring(16, 24);
+			String val = null;
+			String adr = null;
+			if (IR.length() == 20) { // oba registra
+				val = IR.substring(8, 12);
+				adr = IR.substring(12, 20);
+			} else if (IR.length() == 24) { // registar i vrijednost
+				val = IR.substring(8, 16);
+				adr = IR.substring(16, 24);
+			}
 			programCounterChanged = Operations.jmpg(reg, val, adr);
 		} else if (operation.equals(Operations.jmpe)) {
 			String reg = IR.substring(4, 8);
-			String val = IR.substring(8, 16);
-			String adr = IR.substring(16, 24);
+			String val = null;
+			String adr = null;
+			if (IR.length() == 20) { // oba registra
+				val = IR.substring(8, 12);
+				adr = IR.substring(12, 20);
+			} else if (IR.length() == 24) { // registar i vrijednost
+				val = IR.substring(8, 16);
+				adr = IR.substring(16, 24);
+			}
 			programCounterChanged = Operations.jmpe(reg, val, adr);
 		} else if (operation.equals(Operations.load)) {
 			String r1 = IR.substring(4, 8);
@@ -276,8 +296,15 @@ public class Shell {
 			Operations.load(r1, adr);
 		} else if (operation.equals(Operations.jmpd)) {
 			String reg = IR.substring(4, 8);
-			String val = IR.substring(8, 16);
-			String adr = IR.substring(16, 24);
+			String val = null;
+			String adr = null;
+			if (IR.length() == 20) { // oba registra
+				val = IR.substring(8, 12);
+				adr = IR.substring(12, 20);
+			} else if (IR.length() == 24) { // registar i vrijednost
+				val = IR.substring(8, 16);
+				adr = IR.substring(16, 24);
+			}
 			programCounterChanged = Operations.jmpe(reg, val, adr);
 		} else if (operation.equals(Operations.inc)) {
 			String reg = IR.substring(4, 8);
@@ -331,5 +358,4 @@ public class Shell {
 		Operations.R4.value = registers[3];
 		PC = currentlyExecuting.getPcValue();
 	}
-
 }

@@ -2,15 +2,9 @@ package memory;
 
 public class Ram {
 
-	private static final int CAPACITY = 1024;
+	private static final int CAPACITY = 128;
 	private static int[] ram = new int[CAPACITY];
 	private static int occupied = 0;
-
-	public static void printRAM() {
-		for (int i = 0; i < CAPACITY; i++) {
-			System.out.println(ram[i]);
-		}
-	}
 
 	public static void initialize() {
 		for (int i = 0; i < CAPACITY; i++) {
@@ -24,10 +18,6 @@ public class Ram {
 		ram[index] = value;
 		occupied++;
 		return true;
-	}
-
-	public static boolean setAt(int index) {
-		return setAt(index, 1);
 	}
 
 	public static boolean removeSequence(int start, int size) {
@@ -56,14 +46,6 @@ public class Ram {
 		return true;
 	}
 
-	public static boolean setSequence(int start, int size) {
-		int[] data = new int[size];
-		for (int i = 0; i < data.length; i++) {
-			data[i] = 1;
-		}
-		return setSequence(start, data);
-	}
-
 	public static int getAt(int i) {
 		return ram[i];
 	}
@@ -75,6 +57,25 @@ public class Ram {
 			return true;
 		}
 		return false;
+	}
+
+	public static void printRAM() {
+		if (occupied == 0)
+			System.out.println("RAM memory isnt occupied");
+		else {
+			System.out.print("RAM memory:");
+			for (int i = CAPACITY - 1; i >= 0; i--) {
+				if (isOcupied(i)) {
+					for (int j = 0; j < i; j++) {
+						if (j % 10 == 0)
+							System.out.println();
+						System.out.print(ram[j] + "\t");
+					}
+					System.out.println();
+					break;
+				}
+			}
+		}
 	}
 
 	public static boolean isOcupied(int i) {
@@ -92,5 +93,4 @@ public class Ram {
 	public static int getCapacity() {
 		return CAPACITY;
 	}
-
 }

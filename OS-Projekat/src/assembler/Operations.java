@@ -29,7 +29,7 @@ public class Operations {
 	public static void store(String reg, String adr) {
 		Register r = getRegister(reg);
 		if (r != null)
-			Ram.setAt(Integer.parseInt(adr, 2));
+			Ram.setAt(Integer.parseInt(adr, 2), r.value);
 	}
 
 	public static void load(String reg, String adr) {
@@ -128,7 +128,6 @@ public class Operations {
 				return true;
 			}
 		}
-
 		return false;
 	}
 
@@ -253,6 +252,7 @@ public class Operations {
 	}
 
 	public static void printRegisters() {
+		System.out.println("Registers:");
 		System.out.println("R1 value - [ " + R1.value + " ]");
 		System.out.println("R2 value - [ " + R2.value + " ]");
 		System.out.println("R3 value - [ " + R3.value + " ]");

@@ -11,5 +11,4 @@ public class Register {
           this.address = address;
           this.value = value;
      }
-     
 }

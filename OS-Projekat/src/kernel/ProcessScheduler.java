@@ -5,22 +5,22 @@ import java.util.LinkedList;
 import java.util.Queue;
 
 import assembler.Operations;
+import fileSystem.FileSystem;
 import memory.MemoryManager;
 import memory.Ram;
 import shell.Shell;
 
-public class ProcessScheduler {
+public class ProcessScheduler extends Thread {
 
-	public static Queue<Process> readyQueue;
-	public static ArrayList<Process> allProcesses;
+	public static Queue<Process> readyQueue = new LinkedList<>();;
+	public static ArrayList<Process> allProcesses = new ArrayList<>();
 	private static int timeQuantum = 1; // ms
 
-	public static void getReady() {
-		readyQueue = new LinkedList<>();
-		allProcesses = new ArrayList<>();
+	public ProcessScheduler() {
 	}
 
-	public static void start() { // pokrece izvrsavanja svih procesa
+	@Override
+	public void run() { // pokrece izvrsavanja svih procesa
 		while (!readyQueue.isEmpty()) {
 			Process next = readyQueue.poll();
 			executeProcess(next);
@@ -63,17 +63,21 @@ public class ProcessScheduler {
 			Shell.IR = instruction;
 			Shell.executeMachineInstruction();
 		}
-
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			System.out.println("Error with thread");
+		}
 		if (process.getState() == ProcessState.BLOCKED) {
 			System.out.println("Process " + process.getName() + " is blocked");
 			Shell.saveValues();
 		} else if (process.getState() == ProcessState.TERMINATED) {
-			System.out.println("You have terminated process " + process.getName());
+			System.out.println("Process " + process.getName() + " is terminated");
 			MemoryManager.removeProcess(process);
 		} else if (process.getState() == ProcessState.DONE) {
 			System.out.println("Process " + process.getName() + " is done");
-			Operations.printRegisters();
 			MemoryManager.removeProcess(process);
+			FileSystem.createFile(process);
 		} else { // process is switched by process scheduler
 			Shell.saveValues();
 		}
@@ -111,7 +115,8 @@ public class ProcessScheduler {
 		System.out.println("PID\tProgram\t\tSize\tState\t\tCurrent occupation of memory");
 		for (Process process : allProcesses)
 			System.out.println(process.getPid() + "\t" + process.getName() + "\t " + process.getSize() + "\t"
-					+ ProcessState.state(process.getState()) + "\t\t" + MemoryManager.memoryOccupiedByProcess(process));
+					+ ProcessState.state(process.getState()) + "\t\t "
+					+ MemoryManager.memoryOccupiedByProcess(process));
 	}
 
 	public Queue<Process> getReadyQueue() {

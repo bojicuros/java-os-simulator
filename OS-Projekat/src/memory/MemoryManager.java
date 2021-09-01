@@ -1,6 +1,8 @@
 package memory;
 
 import java.util.ArrayList;
+
+import assembler.Operations;
 import kernel.Process;
 import kernel.ProcessState;
 
@@ -162,6 +164,12 @@ public class MemoryManager {
 			if (partition.getProcess().getPid() == process.getPid())
 				return partition.getSize();
 		return 0;
+	}
+	
+	public static void printMemory() {
+		Ram.printRAM();
+		Operations.printRegisters();
+		SecondaryMemory.printMemoryAllocationTable();
 	}
 
 	public static ArrayList<PartitionMemory> getPartitionsInRam() {

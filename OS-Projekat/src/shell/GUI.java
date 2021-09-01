@@ -21,6 +21,7 @@ public class GUI extends Application {
 	private static TextField bottom = new TextField();
 	private static Button close;
 	private static Button minimize;
+	private static Button maximize;
 	private PipedInputStream inp = new PipedInputStream();
 	private PipedOutputStream out = new PipedOutputStream();
 	private StringBuilder outStringBuilder = new StringBuilder();
@@ -54,11 +55,12 @@ public class GUI extends Application {
 		close.setPrefSize(5, 5);
 		minimize = new Button("_");
 		minimize.setPrefSize(5, 5);
+		maximize = new Button("❐");
 
 		HBox buttons = new HBox(5);
 		buttons.setAlignment(Pos.TOP_RIGHT);
 
-		buttons.getChildren().addAll(minimize, close);
+		buttons.getChildren().addAll(minimize, maximize, close);
 
 		top = new TextArea();
 		top.setMinSize(900, 450);
@@ -75,6 +77,16 @@ public class GUI extends Application {
 		minimize.setOnAction(e -> {
 			Stage stage = (Stage) minimize.getScene().getWindow();
 			stage.setIconified(true);
+			bottom.requestFocus();
+		});
+
+		maximize.setOnAction(e -> {
+			Stage stage = (Stage) maximize.getScene().getWindow();
+			if (!stage.isMaximized())
+				stage.setMaximized(true);
+			else
+				stage.setMaximized(false);
+			bottom.requestFocus();
 		});
 
 		bottom.setOnAction(e -> {
@@ -134,11 +146,8 @@ public class GUI extends Application {
 
 		primaryStage.setScene(scene);
 		primaryStage.initStyle(StageStyle.TRANSPARENT);
-		primaryStage.setTitle("Console");
-		primaryStage.setResizable(false);
 		primaryStage.show();
 
 		bottom.requestFocus();
-
 	}
 }
