@@ -1,9 +1,12 @@
 package shell;
 
+import assembler.Operations;
 import fileSystem.FileSystem;
 import kernel.Process;
 import kernel.ProcessScheduler;
 import memory.MemoryManager;
+import memory.Ram;
+import memory.SecondaryMemory;
 
 public class ShellExe {
 
@@ -23,8 +26,24 @@ public class ShellExe {
 		FileSystem.deleteDirectory(par);
 	}
 
+	public static void df(String par) {
+		FileSystem.deleteFile(par);
+	}
+
 	public static void rd(String name, String newName) {
 		FileSystem.renameDirectory(name, newName);
+	}
+
+	public static void memM() {
+		Ram.printRAM();
+	}
+
+	public static void memR() {
+		Operations.printRegisters();
+	}
+
+	public static void memS() {
+		SecondaryMemory.printMemoryAllocationTable();
 	}
 
 	public static void mem() {

@@ -130,9 +130,9 @@ public class SecondaryMemory {
 		return counter;
 	}
 
-	public boolean contains(FileInMemory file) {
+	public boolean contains(String fileName) {
 		for (FileInMemory f : files)
-			if (f.getName().equals(file.getName()) && f.getSize() == file.getSize())
+			if (f.getName().equals(fileName))
 				return true;
 		return false;
 	}
@@ -163,7 +163,7 @@ public class SecondaryMemory {
 		System.out.println("Name of file\t\tStart block\tLength");
 		System.out.println(line);
 		for (FileInMemory file : files)
-			System.out.println(file.getName() + (file.getName().length() < 15
+			System.out.println(file.getName() + (file.getName().length() < 16
 					? ("\t\t" + file.getStart().block.getAdress() + "\t\t" + file.getLength())
 					: ("\t" + file.getStart().block.getAdress() + "\t\t" + file.getLength())));
 	}

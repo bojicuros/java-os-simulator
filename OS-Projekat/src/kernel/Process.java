@@ -5,6 +5,7 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.ArrayList;
 
+import memory.MemoryManager;
 import shell.Shell;
 
 public class Process {
@@ -40,7 +41,8 @@ public class Process {
 	public void block() {
 		if (this.state == ProcessState.RUNNING) {
 			this.state = ProcessState.BLOCKED;
-			ProcessScheduler.readyQueue.remove(this);
+			if (ProcessScheduler.readyQueue.contains(this))
+				ProcessScheduler.readyQueue.remove(this);
 		}
 	}
 
@@ -53,10 +55,13 @@ public class Process {
 	}
 
 	public void terminate() {
-		if (this.state == ProcessState.READY || this.state == ProcessState.BLOCKED
-				|| this.state == ProcessState.RUNNING) {
+		if (this.state == ProcessState.READY || this.state == ProcessState.RUNNING) {
 			this.state = ProcessState.TERMINATED;
-			ProcessScheduler.readyQueue.remove(this);
+			if (ProcessScheduler.readyQueue.contains(this))
+				ProcessScheduler.readyQueue.remove(this);
+		} else if (this.state == ProcessState.BLOCKED) {
+			MemoryManager.removeProcess(this);
+			this.state = ProcessState.TERMINATED;
 		}
 	}
 

@@ -66,7 +66,7 @@ public class Ram {
 			System.out.print("RAM memory:");
 			for (int i = CAPACITY - 1; i >= 0; i--) {
 				if (isOcupied(i)) {
-					for (int j = 0; j < i; j++) {
+					for (int j = 0; j <= i; j++) {
 						if (j % 10 == 0)
 							System.out.println();
 						System.out.print(ram[j] + "\t");

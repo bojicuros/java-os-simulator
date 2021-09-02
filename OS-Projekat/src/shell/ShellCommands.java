@@ -48,6 +48,13 @@ public class ShellCommands {
 			if (commands.length == 2) {
 				String parameter = commands[1];
 				ShellExe.dd(parameter);
+			} else if (commands.length == 3) {
+				String parameter1 = commands[1];
+				String parameter2 = commands[2];
+				if (parameter1.equals("-f")) {
+					ShellExe.df(parameter2);
+				} else
+					errorWithParameters();
 			} else
 				errorWithParameters();
 			break;
@@ -64,6 +71,16 @@ public class ShellCommands {
 		case "mem": // print memory
 			if (commands.length == 1) {
 				ShellExe.mem();
+			} else if (commands.length == 2) {
+				String parameter = commands[1];
+				if (parameter.equals("-m")) { // show main memory
+					ShellExe.memM();
+				} else if (parameter.equals("-r")) { // show registers
+					ShellExe.memR();
+				} else if (parameter.equals("-s")) { // show secondary memory allocation table
+					ShellExe.memS();
+				} else
+					errorWithParameters();
 			} else
 				errorWithParameters();
 			break;

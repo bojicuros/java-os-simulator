@@ -64,7 +64,7 @@ public class ProcessScheduler extends Thread {
 			Shell.executeMachineInstruction();
 		}
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(2000);
 		} catch (InterruptedException e) {
 			System.out.println("Error with thread");
 		}
@@ -85,38 +85,37 @@ public class ProcessScheduler extends Thread {
 	}
 
 	public static void blockProcess(Integer pid) {
-		for (Process process : allProcesses)
-			if (process.getPid() == pid) {
-				process.block();
-				return;
-			}
-		System.out.println("You entered name of nonexistent process, check and try again");
+		if (pid < allProcesses.size()) {
+			allProcesses.get(pid).block();
+			return;
+		}
+		System.out.println("Process with PID " + pid + " doesnt exist, check and try again");
 	}
 
 	public static void unblockProcess(Integer pid) {
-		for (Process process : allProcesses)
-			if (process.getPid() == pid) {
-				process.unblock();
-				return;
-			}
-		System.out.println("You entered name of nonexistent process, check and try again");
+		if (pid < allProcesses.size()) {
+			allProcesses.get(pid).unblock();
+			return;
+		}
+		System.out.println("Process with PID " + pid + " doesnt exist, check and try again");
 	}
 
 	public static void terminateProcess(Integer pid) {
-		for (Process process : allProcesses)
-			if (process.getPid() == pid) {
-				process.terminate();
-				return;
-			}
-		System.out.println("You entered name of nonexistent process, check and try again");
+		if (pid < allProcesses.size()) {
+			allProcesses.get(pid).terminate();
+			return;
+		}
+		System.out.println("Process with PID " + pid + " doesnt exist, check and try again");
 	}
 
 	public static void listOfProcesses() {
 		System.out.println("PID\tProgram\t\tSize\tState\t\tCurrent occupation of memory");
 		for (Process process : allProcesses)
 			System.out.println(process.getPid() + "\t" + process.getName() + "\t " + process.getSize() + "\t"
-					+ ProcessState.state(process.getState()) + "\t\t "
-					+ MemoryManager.memoryOccupiedByProcess(process));
+					+ ProcessState.state(process.getState())
+					+ (ProcessState.state(process.getState()).length() > 8
+							? "\t " + MemoryManager.memoryOccupiedByProcess(process)
+							: "\t\t " + MemoryManager.memoryOccupiedByProcess(process)));
 	}
 
 	public Queue<Process> getReadyQueue() {

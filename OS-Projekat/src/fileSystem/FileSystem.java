@@ -38,7 +38,7 @@ public class FileSystem {
 				else { // Ucitava fajlove u sekundarnu memoriju
 					byte[] content = Files.readAllBytes(newItem.getValue().toPath());
 					FileInMemory newFile = new FileInMemory(newItem.getValue().getName(), content);
-					if (!Shell.memory.contains(newFile))
+					if (!Shell.memory.contains(newItem.getValue().getName()))
 						Shell.memory.save(newFile);
 				}
 			}
@@ -65,7 +65,9 @@ public class FileSystem {
 				e.printStackTrace();
 			}
 			System.out.println(file.getValue().isDirectory() ? ("Folder \t" + file.getValue().getName())
-					: ("File" + "\t" + file.getValue().getName() + "\t\t" + fileContent.length + " B"));
+					: ("File" + "\t" + file.getValue().getName()
+							+ (file.getValue().getName().length() < 16 ? "\t\t" + fileContent.length + " B"
+									: "\t" + fileContent.length + " B")));
 		}
 	}
 
@@ -111,6 +113,16 @@ public class FileSystem {
 			fw.close();
 		} catch (IOException e) {
 			System.out.println("Error while creating file");
+		}
+	}
+
+	public static void deleteFile(String name) {
+		for (TreeItem<File> file : Shell.tree.getTreeItem().getChildren()) {
+			if (file.getValue().getName().equals(name) && !file.getValue().isDirectory())
+				file.getValue().delete();
+			if (Shell.memory.contains(name)) {
+				Shell.memory.deleteFile(Shell.memory.getFile(name));
+			}
 		}
 	}
 
